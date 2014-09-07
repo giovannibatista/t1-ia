@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Coleta Seletiva de Lixo</title>
+
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script type="text/javascript" src="js/script.js" />
+
+</h:head>
+<h:body>
+	<h:form id="form">
+		<p:panel header="Coleta Seletiva de Lixo">
+			<h:panelGrid columns="2">
+				<p:outputLabel for="columns" value="Colunas" />
+				<p:inputText id="columns" value="#{main.columns}" />
+
+				<p:outputLabel for="rows" value="Linhas" />
+				<p:inputText id="rows" value="#{main.rows}" />
+			</h:panelGrid>
+
+			<p:separator />
+
+			<p:commandButton value="Gerar matriz" action="#{main.run}"
+				update="@form" />
+			<p:commandButton value="Adicionar mais agentes" action="#{main.run}"
+				update="@form" />
+
+		</p:panel>
+
+		<table style="border: 1px solid;" id="agents">
+			<ui:repeat value="#{main.agents}" var="firstLevel">
+				<tr>
+					<ui:repeat value="#{firstLevel}" var="secondLevel"
+						rendered="#{!empty  firstLevel}">
+						<td style="border: 1px solid;">
+							<img src="#{secondLevel.icon}" alt="" class="icon"/>
+						</td>
+
+					</ui:repeat>
+				</tr>
+			</ui:repeat>
+		</table>
+	</h:form>
+</h:body>
+</html>
