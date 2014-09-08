@@ -11,6 +11,8 @@ public class Collector extends Agent {
 
 	public Collector(String name, Integer axisX, Integer axisY) {
 		super(name, icon, axisY, axisY);
+		recharges = new ArrayList<Recharge>();
+		trasCans = new ArrayList<TrashCan>();
 		// TODO Auto-generated constructor stub
 	}
 
