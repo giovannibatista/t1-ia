@@ -7,10 +7,15 @@ public class TrashCan extends Agent {
 	private boolean isFull;
 	private Integer capacity;
 	private TrashCanType color;
-	private static String icon = "img/trashCanEmpty.png";
-	
 	
 	public TrashCan(String name, boolean isFull, Integer capacity, TrashCanType color, Integer axisX, Integer axisY) {
+		super(name, "", axisY, axisY);
+		this.isFull = isFull;
+		this.capacity = capacity;
+		this.color = color;
+	}
+	
+	public TrashCan(String name,String icon, boolean isFull, Integer capacity, TrashCanType color, Integer axisX, Integer axisY) {
 		super(name, icon, axisY, axisY);
 		this.isFull = isFull;
 		this.capacity = capacity;
@@ -38,14 +43,5 @@ public class TrashCan extends Agent {
 		this.color = color;
 	}
 
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
-	
-	
 
 }

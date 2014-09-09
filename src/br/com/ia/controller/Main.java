@@ -7,6 +7,7 @@ import br.com.ia.agents.Agent;
 import br.com.ia.agents.Collector;
 import br.com.ia.agents.Recharge;
 import br.com.ia.agents.TrashCan;
+import br.com.ia.utils.TrashCanType;
 import br.com.ia.utils.TrashCanTypeGenerator;
 
 @ViewScoped
@@ -51,17 +52,17 @@ public class Main {
 		}
 
 	}
-	
+
 	public void next(){
-		
+
 		if(!hasElement(collector.getAxisX(),collector.getAxisY()+1)){
 			agents[collector.getAxisX()][collector.getAxisY()] = null;
 			collector.setAxisY(collector.getAxisY()+1);
 			agents[collector.getAxisX()][collector.getAxisY()] = collector;
 		}
-		
+
 	}
-	
+
 	public void insertTrashCan(){
 		Integer x = (int)(Math.random() * 10);
 		Integer y = (int)(Math.random() * 10);
@@ -69,7 +70,9 @@ public class Main {
 		if(hasElement(x,y))
 			insertTrashCan();
 
-		TrashCan trashCan = new TrashCan("Lixeira", false, 10, TrashCanTypeGenerator.next(), x, y);
+		TrashCanType trashCanType = TrashCanTypeGenerator.next();
+		String img = TrashCanTypeGenerator.getTrashCanTypeIcon(trashCanType);
+		TrashCan trashCan = new TrashCan("Lixeira",img, false, 10, TrashCanTypeGenerator.next(), x, y);
 
 		agents[x][y] = trashCan;
 
@@ -96,11 +99,11 @@ public class Main {
 	//Validar posicao dos agentes
 	public boolean hasElement(Integer x, Integer y){
 		System.out.println("----------------->>" + x + ", " + y);
-		
+
 		if(agents[x][y] != null){
 			return true;
 		}
-			
+
 		/*if(x > 0 && x < rows){
 			if(agents[x+1][y] != null)
 				return true;
