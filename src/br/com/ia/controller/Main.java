@@ -54,7 +54,14 @@ public class Main {
 	
 	public void next(){
 		
+		if(!hasElement(collector.getAxisX(),collector.getAxisY()+1)){
+			agents[collector.getAxisX()][collector.getAxisY()] = null;
+			collector.setAxisY(collector.getAxisY()+1);
+			agents[collector.getAxisX()][collector.getAxisY()] = collector;
+		}
+		
 	}
+	
 	public void insertTrashCan(){
 		Integer x = (int)(Math.random() * 10);
 		Integer y = (int)(Math.random() * 10);
@@ -89,11 +96,11 @@ public class Main {
 	//Validar posicao dos agentes
 	public boolean hasElement(Integer x, Integer y){
 		System.out.println("----------------->>" + x + ", " + y);
+		
 		if(agents[x][y] != null){
-
 			return true;
 		}
-
+			
 		/*if(x > 0 && x < rows){
 			if(agents[x+1][y] != null)
 				return true;

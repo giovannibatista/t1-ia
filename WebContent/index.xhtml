@@ -35,7 +35,7 @@
 		<p:commandButton value="Gerar matriz" actionListener="#{main.run}"
 			update=":form" onclick="hideButton(this)" />
 		<p:commandButton value="Próximo passo" actionListener="#{main.next}" id="next"
-			update=":form" style="display: none;"/>
+			update="form" style="display: none;"/>
 		<p:commandButton value="Adicionar mais lixeiras" id="insertTrashCan"
 			action="#{main.insertTrashCan}" update=":form" style="display: none;" />
 		<p:commandButton value="Adicionar mais pontos de recarga" id="insertRecharges"
