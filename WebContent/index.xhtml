@@ -13,32 +13,37 @@
 
 </h:head>
 <h:body>
-	<h:form id="form">
-		<p:panel header="Coleta Seletiva de Lixo">
-			<h:panelGrid columns="3">
-				<h:panelGrid columns="2">
-					<p:outputLabel for="columns" value="Colunas x Linhas" />
-					<p:inputText id="columns" value="#{main.columns}" />
-				</h:panelGrid>
 
-				<h:panelGrid columns="2">
-					<p:outputLabel for="amountTrashCans" value="Quantidade de lixeiras" />
-					<p:inputText id="amountTrashCans" value="#{main.amountTrashCans}" />
-
-					<p:outputLabel for="amountRecharges" value="Quantidade de recargas" />
-					<p:inputText id="amountRecharges" value="#{main.amountRecharges}" />
-				</h:panelGrid>
+	<p:panel header="Coleta Seletiva de Lixo">
+		<h:panelGrid columns="3">
+			<h:panelGrid columns="2">
+				<p:outputLabel for="columns" value="Colunas x Linhas" />
+				<p:inputText id="columns" value="#{main.columns}" />
 			</h:panelGrid>
 
-			<p:separator />
+			<h:panelGrid columns="2">
+				<p:outputLabel for="amountTrashCans" value="Quantidade de lixeiras" />
+				<p:inputText id="amountTrashCans" value="#{main.amountTrashCans}" />
 
-			<p:commandButton value="Gerar matriz" actionListener="#{main.run}"
-				update="@form" />
-			<p:commandButton value="Adicionar mais agentes" action="#{main.run}"
-				update="@form" />
+				<p:outputLabel for="amountRecharges" value="Quantidade de recargas" />
+				<p:inputText id="amountRecharges" value="#{main.amountRecharges}" />
+			</h:panelGrid>
+		</h:panelGrid>
 
-		</p:panel>
+		<p:separator />
 
+		<p:commandButton value="Gerar matriz" actionListener="#{main.run}"
+			update=":form" onclick="hideButton(this)" />
+		<p:commandButton value="Próximo passo" actionListener="#{main.next}" id="next"
+			update=":form" style="display: none;"/>
+		<p:commandButton value="Adicionar mais lixeiras" id="insertTrashCan"
+			action="#{main.insertTrashCan}" update=":form" style="display: none;" />
+		<p:commandButton value="Adicionar mais pontos de recarga" id="insertRecharges"
+			action="#{main.insertRecharges}" update=":form" style="display: none;"  />
+
+	</p:panel>
+
+	<h:form id="form">
 		<table style="border: 1px solid;" id="agents">
 			<ui:repeat value="#{main.agents}" var="firstLevel">
 				<tr>

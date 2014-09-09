@@ -7,7 +7,7 @@ import br.com.ia.agents.Agent;
 import br.com.ia.agents.Collector;
 import br.com.ia.agents.Recharge;
 import br.com.ia.agents.TrashCan;
-import br.com.ia.utils.TrashCanType;
+import br.com.ia.utils.TrashCanTypeGenerator;
 
 @ViewScoped
 @ManagedBean
@@ -43,31 +43,26 @@ public class Main {
 		agents[0][0] = collector;
 
 		for (int i = 0; i < amountTrashCans; i++) {
-			initLocationTrashCan();
+			insertTrashCan();
 		}
 
 		for (int i = 0; i < amountRecharges; i++) {
-			initLocationRecharges();
+			insertRecharges();
 		}
 
-		/*for (int row = 0; row < agents.length; row++) {
-			for (int col = 0; col < agents[row].length; col++) {
-				agents[row][col] = new Collector("Agente (" +  Math.round(row) +", "+Math.round(col) + ")", row, col);
-			}
-		}*/
-
-
 	}
-
-	public void initLocationTrashCan(){
+	
+	public void next(){
+		
+	}
+	public void insertTrashCan(){
 		Integer x = (int)(Math.random() * 10);
 		Integer y = (int)(Math.random() * 10);
 
-		if(agents[x][y] != null)
-			initLocationTrashCan();
+		if(hasElement(x,y))
+			insertTrashCan();
 
-
-		TrashCan trashCan = new TrashCan("Lixeira", false, 10, TrashCanType.BLUE, x, y);
+		TrashCan trashCan = new TrashCan("Lixeira", false, 10, TrashCanTypeGenerator.next(), x, y);
 
 		agents[x][y] = trashCan;
 
@@ -75,12 +70,12 @@ public class Main {
 
 	}
 
-	public void initLocationRecharges(){
+	public void insertRecharges(){
 		Integer x = (int)(Math.random() * 10);
 		Integer y = (int)(Math.random() * 10);
 
 		if(hasElement(x,y))
-			initLocationRecharges();
+			insertRecharges();
 
 		Recharge recharge = new Recharge("Recarga", x, y);
 
@@ -94,9 +89,12 @@ public class Main {
 	//Validar posicao dos agentes
 	public boolean hasElement(Integer x, Integer y){
 		System.out.println("----------------->>" + x + ", " + y);
-		if(agents[x][y] != null)
+		if(agents[x][y] != null){
+
 			return true;
-		if(x > 0 && x < rows){
+		}
+
+		/*if(x > 0 && x < rows){
 			if(agents[x+1][y] != null)
 				return true;
 			else if(agents[x-1][y] != null)
@@ -117,8 +115,7 @@ public class Main {
 				return true;
 			else if(agents[x-1][y+1] != null)
 				return true;
-		}
-
+		}*/
 		return false;
 	}
 
