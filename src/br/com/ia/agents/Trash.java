@@ -1,13 +1,17 @@
 package br.com.ia.agents;
 
-public class Trash extends Agent {
-	
+public class Trash extends Block {
+
 	private String type;
+	private String name;
 	private static String icon = "img/trash.png";
 	
-	public Trash(String name, String type, Integer axisX, Integer axisY) {
-		super(name, icon, axisX, axisX);
+	private int quantity;
+
+	public Trash(String name, int quantity, String type, Integer x, Integer y) {
+		super(x, y);
 		this.type = type;
+		this.quantity = quantity;
 	}
 
 	public String getType() {
@@ -18,6 +22,7 @@ public class Trash extends Agent {
 		this.type = type;
 	}
 	
-	
-
+	public String toString() {
+		return name;
+	}
 }

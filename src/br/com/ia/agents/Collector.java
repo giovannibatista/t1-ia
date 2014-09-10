@@ -1,52 +1,38 @@
 package br.com.ia.agents;
 
 import java.util.ArrayList;
+import br.com.ia.utils.Position;
 
 public class Collector extends Agent {
+
+	private ArrayList<Position> trashCans;
+	private ArrayList<Position> rechargers;
 	
-	private ArrayList<TrashCan> trasCans;
-	private ArrayList<Recharge> recharges;
 	private static String icon = "img/collector.png";
-		
 
-	public Collector(String name, Integer axisX, Integer axisY) {
+	public Collector(String name, int axisX, int axisY) {
 		super(name, icon, axisY, axisY);
-		recharges = new ArrayList<Recharge>();
-		trasCans = new ArrayList<TrashCan>();
-		// TODO Auto-generated constructor stub
-	}
-
-
-	public ArrayList<TrashCan> getTrasCans() {
-		return trasCans;
-	}
-
-
-	public void setTrasCans(ArrayList<TrashCan> trasCans) {
-		this.trasCans = trasCans;
-	}
-
-
-	public ArrayList<Recharge> getRecharges() {
-		return recharges;
-	}
-
-
-	public void setRecharges(ArrayList<Recharge> recharges) {
-		this.recharges = recharges;
-	}
-
-
-	public String getIcon() {
-		return icon;
-	}
-
-
-	public void setIcon(String icon) {
-		Collector.icon = icon;
+		trashCans = new ArrayList<Position>();
+		rechargers = new ArrayList<Position>();
 	}
 	
+	public boolean addTrashCan(int x, int y) {
+		Position pos = new Position(x, y);
+		
+		if (trashCans.contains(pos)) {
+			return false;
+		}
+		
+		return trashCans.add(pos);
+	}
 	
-	
-
+	public boolean addRecharger(int x, int y) {
+		Position pos = new Position(x, y);
+		
+		if (rechargers.contains(pos)) {
+			return false;
+		}
+		
+		return rechargers.add(pos);
+	}
 }
