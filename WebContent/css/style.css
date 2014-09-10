@@ -1,7 +1,11 @@
 
+table#agents{
+	border: 1px solid;
+}
+
 #agents td{
-	width: 60px;
-	height: 60px;
+	width: 40px;
+	height: 40px;
 }
 
 #agentsTable{
@@ -9,6 +13,7 @@
 }
 
 .icon{
-	width: 60px;
-	height: 60px;
+	width: 40px;
+	height: 40px;
+	border: 1px solid;
 }

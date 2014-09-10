@@ -4,7 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import br.com.ia.agents.Agent;
+import br.com.ia.agents.Block;
 import br.com.ia.agents.Collector;
 import br.com.ia.agents.Recharger;
 import br.com.ia.agents.TrashCan;
@@ -15,12 +15,12 @@ import br.com.ia.utils.TrashCanTypeGenerator;
 @ManagedBean
 public class Main {
 
-	private Agent[][] agents;
+	private Block[][] blocks;
 	private Integer columns;
 	private Integer rows;
 
 	private Integer amountTrashCans;
-	private Integer amountRecharges;
+	private Integer amountRechargers;
 
 	private Collector collector;
 
@@ -29,24 +29,24 @@ public class Main {
 		System.out.println(" Bean executado! ");
 
 		// Valores iniciais
-		columns = 10;
+		columns = 15;
 		amountTrashCans = 4;
-		amountRecharges = 1;
+		amountRechargers = 1;
 	}
 
 	public void run() {
 		rows = columns;
-		agents = new Agent[rows][columns];
+		blocks = new Block[rows][columns];
 
 		collector = new Collector("Coletor1", 0, 0);
 
-		agents[0][0] = collector;
+		blocks[0][0] = collector;
 
 		for (int i = 0; i < amountTrashCans; i++) {
 			insertTrashCan();
 		}
 
-		for (int i = 0; i < amountRecharges; i++) {
+		for (int i = 0; i < amountRechargers; i++) {
 			insertRecharges();
 		}
 
@@ -73,7 +73,7 @@ public class Main {
 		String img = TrashCanTypeGenerator.getTrashCanTypeIcon(trashCanType);
 		TrashCan trashCan = new TrashCan("Lixeira", img, 10, TrashCanTypeGenerator.next(), x, y);
 
-		agents[x][y] = trashCan;
+		blocks[x][y] = trashCan;
 
 		collector.addTrashCan(x, y);
 
@@ -88,7 +88,7 @@ public class Main {
 
 		Recharger recharge = new Recharger("Recarga", x, y);
 
-		agents[x][y] = recharge;
+		blocks[x][y] = recharge;
 
 		collector.addRecharger(x, y);
 
@@ -98,7 +98,7 @@ public class Main {
 	public boolean hasElement(Integer x, Integer y) {
 		System.out.println("----------------->>" + x + ", " + y);
 
-		if (agents[x][y] != null) {
+		if (blocks[x][y] != null) {
 			return true;
 		}
 
@@ -114,16 +114,12 @@ public class Main {
 		return false;
 	}
 
-	public String getMessage() {
-		return "Hello World JSF!";
+	public Block[][] getBlocks() {
+		return blocks;
 	}
 
-	public Agent[][] getAgents() {
-		return agents;
-	}
-
-	public void setAgents(Agent[][] agents) {
-		this.agents = agents;
+	public void setBlocks(Block[][] blocks) {
+		this.blocks = blocks;
 	}
 
 	public Integer getColumns() {
@@ -150,12 +146,12 @@ public class Main {
 		this.amountTrashCans = amountTrashCans;
 	}
 
-	public Integer getAmountRecharges() {
-		return amountRecharges;
+	public Integer getAmountRechargers() {
+		return amountRechargers;
 	}
 
-	public void setAmountRecharges(Integer amountRecharges) {
-		this.amountRecharges = amountRecharges;
+	public void setAmountRechargers(Integer amountRechargers) {
+		this.amountRechargers = amountRechargers;
 	}
 
 	public Collector getCollector() {
