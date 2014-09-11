@@ -3,6 +3,9 @@ package br.com.ia.controller;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import org.primefaces.context.RequestContext;
 
 @ViewScoped
 @ManagedBean
@@ -23,9 +26,14 @@ public class Main {
 		amountRechargers = 1;
 	}
 
-	public void createMatix() {
+	public void createMatix(ActionEvent event) {
+		amountCollectors = 1;
+		amountTrashCans = 4;
+		amountRechargers = 1;
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
 		matrix.createMatix();
+		
+		RequestContext.getCurrentInstance().update("agents");
 	}
 
 	public Matrix getMatrix() {

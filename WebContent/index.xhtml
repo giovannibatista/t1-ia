@@ -35,6 +35,9 @@
 
 			<p:commandButton value="Gerar matriz" actionListener="#{main.createMatix}"
 				update="@form :tableAgents" onclick="hideButton(this)" />
+				
+				<p:remoteCommand name="testRemote" actionListener="#{main.createMatix}" update="@form :tableAgents"/>
+				<p:commandButton type="button" onclick="test();" value="teste"/>
 			
 
 		</p:panel>

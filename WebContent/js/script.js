@@ -4,3 +4,10 @@ function hideButton(button){
 	document.getElementById('insertTrashCan').style.display='';
 	document.getElementById('insertRecharges').style.display='';*/
 }
+
+
+function test(){
+	console.info('Chamando testeRemonte...')
+	testRemote();
+	
+}
