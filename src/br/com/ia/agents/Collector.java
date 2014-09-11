@@ -1,6 +1,7 @@
 package br.com.ia.agents;
 
 import java.util.ArrayList;
+
 import br.com.ia.utils.Position;
 
 public class Collector extends Agent {
@@ -16,6 +17,12 @@ public class Collector extends Agent {
 		rechargers = new ArrayList<Position>();
 	}
 	
+	public Collector(String name, Position position) {
+		super(name, icon, position);
+		trashCans = new ArrayList<Position>();
+		rechargers = new ArrayList<Position>();
+	}
+
 	public boolean addTrashCan(int x, int y) {
 		Position pos = new Position(x, y);
 		

@@ -1,13 +1,22 @@
 package br.com.ia.agents;
 
+import br.com.ia.utils.Position;
+
 public abstract class Agent extends Block {
 	private String name;
-	private String icon;
 	
 	public Agent(String name, String icon, Integer x, Integer y) {
-		super(x, y);
+		super(icon, x, y);
 		this.name = name;
-		this.icon = icon;
+	}
+
+	public Agent(String name, String icon, Position position) {
+		super(icon, position);
+		this.name = name;
+	}
+
+	public Agent(Position position) {
+		super(position);
 	}
 
 	public String getName() {
@@ -18,14 +27,6 @@ public abstract class Agent extends Block {
 		this.name = name;
 	}
 
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
-	
 	public String toString() {
 		return name;
 	}

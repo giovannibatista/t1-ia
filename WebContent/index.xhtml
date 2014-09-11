@@ -18,28 +18,30 @@
 		<p:panel header="Coleta Seletiva de Lixo">
 			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
+					<p:outputLabel for="amountCollectors" value="Quantidade de coletores" />
+					<p:inputText id="amountCollectors" value="#{main.amountCollectors}" />
+					
 					<p:outputLabel for="amountTrashCans" value="Quantidade de lixeiras" />
 					<p:inputText id="amountTrashCans" value="#{main.amountTrashCans}" />
 
-					<p:outputLabel for="amountRechargers"
-						value="Quantidade de recargas" />
+					<p:outputLabel for="amountRechargers" value="Quantidade de recargas" />
 					<p:inputText id="amountRechargers" value="#{main.amountRechargers}" />
+					
 				</h:panelGrid>
 
 			</h:panelGrid>
 
 			<p:separator />
 
-			<p:commandButton value="Gerar matriz" actionListener="#{main.run}"
+			<p:commandButton value="Gerar matriz" actionListener="#{main.createMatix}"
 				update="@form :tableAgents" onclick="hideButton(this)" />
-			<p:commandButton value="Próximo passo" actionListener="#{main.next}"
-				id="next" update="@form" style="display: none;" />
+			
 
 		</p:panel>
 	</h:form>
 	<h:form id="tableAgents">
 		<table id="agents">
-			<ui:repeat value="#{main.blocks}" var="firstLevel">
+			<ui:repeat value="#{main.matrix.matrix}" var="firstLevel">
 				<tr>
 					<ui:repeat value="#{firstLevel}" var="secondLevel"
 						rendered="#{!empty  firstLevel}">

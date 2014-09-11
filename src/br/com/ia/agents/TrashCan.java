@@ -1,21 +1,28 @@
 package br.com.ia.agents;
 
-import br.com.ia.utils.TrashCanType;
+import br.com.ia.utils.Position;
+import br.com.ia.utils.TrashType;
 
 public class TrashCan extends Agent {
 
 	private boolean full;
 	private Integer capacity;
-	private TrashCanType color;
+	private TrashType color;
 
-	public TrashCan(String name, Integer capacity, TrashCanType color, Integer axisX, Integer axisY) {
+	public TrashCan(String name, Integer capacity, TrashType color, Integer axisX, Integer axisY) {
 		super(name, "", axisY, axisY);
 		this.capacity = capacity;
 		this.color = color;
 	}
 
-	public TrashCan(String name, String icon, Integer capacity, TrashCanType color, Integer axisX, Integer axisY) {
+	public TrashCan(String name, String icon, Integer capacity, TrashType color, Integer axisX, Integer axisY) {
 		super(name, icon, axisY, axisY);
+		this.capacity = capacity;
+		this.color = color;
+	}
+
+	public TrashCan(String name, String icon, Integer capacity, TrashType color,Position position) {
+		super(name, icon, position);
 		this.capacity = capacity;
 		this.color = color;
 	}
@@ -36,11 +43,11 @@ public class TrashCan extends Agent {
 		this.capacity = capacity;
 	}
 
-	public TrashCanType getColor() {
+	public TrashType getColor() {
 		return color;
 	}
 
-	public void setColor(TrashCanType color) {
+	public void setColor(TrashType color) {
 		this.color = color;
 	}
 }

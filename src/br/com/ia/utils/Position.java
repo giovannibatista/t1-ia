@@ -33,6 +33,14 @@ public class Position {
 			)
 		);
 	}
+	
+	public static Position getRandomPosition(Integer seed){
+		Position position = null;
+		Integer x = (int) (Math.random() * seed);
+		Integer y = (int) (Math.random() * seed);
+		position = new Position(x, y);
+		return position;
+	}
 
 	public String toString() {
 		return "(" + x + ", " + y + ")";

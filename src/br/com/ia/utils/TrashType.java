@@ -1,6 +1,6 @@
 package br.com.ia.utils;
 
-public enum TrashCanType {
+public enum TrashType {
 	
 	GREEN, RED, BLUE, YELLOW;
 	
