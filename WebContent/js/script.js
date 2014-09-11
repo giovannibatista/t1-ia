@@ -7,6 +7,7 @@ function hideButton(button){
 
 
 function test(){
+	
 	console.info('Chamando testeRemonte...')
 	testRemote();
 	

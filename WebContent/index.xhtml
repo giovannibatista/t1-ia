@@ -37,7 +37,7 @@
 				update="@form :tableAgents" onclick="hideButton(this)" />
 				
 				<p:remoteCommand name="testRemote" actionListener="#{main.createMatix}" update="@form :tableAgents"/>
-				<p:commandButton type="button" onclick="test();" value="teste"/>
+				<input type="button" onclick="test();" value="teste"/>
 			
 
 		</p:panel>
@@ -47,7 +47,7 @@
 			<ui:repeat value="#{main.matrix.matrix}" var="firstLevel">
 				<tr>
 					<ui:repeat value="#{firstLevel}" var="secondLevel"
-						rendered="#{!empty  firstLevel}">
+						rendered="#{!empty firstLevel}">
 						<td><img src="#{secondLevel.icon}"
 							alt="" class="icon" /></td>
 					</ui:repeat>

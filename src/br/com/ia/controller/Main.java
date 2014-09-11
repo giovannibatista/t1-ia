@@ -25,8 +25,8 @@ public class Main {
 		amountTrashCans = 4;
 		amountRechargers = 1;
 	}
-
-	public void createMatix(ActionEvent event) {
+	
+	public void createMatix() {
 		amountCollectors = 1;
 		amountTrashCans = 4;
 		amountRechargers = 1;
