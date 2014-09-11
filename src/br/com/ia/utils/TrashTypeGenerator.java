@@ -1,5 +1,6 @@
 package br.com.ia.utils;
 
+
 public class TrashTypeGenerator {
 
 	private static Integer index = 0;
