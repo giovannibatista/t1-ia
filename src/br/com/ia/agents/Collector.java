@@ -11,7 +11,8 @@ public class Collector extends Agent {
 	private ArrayList<PositionTrashCan> trashCans;
 	private ArrayList<Position> rechargers;
 
-	ArrayList<Position> neighbors;
+	private ArrayList<Position> neighbors;
+	private ArrayList<Position> possibleBlocks;
 
 	String status;
 
@@ -41,6 +42,11 @@ public class Collector extends Agent {
 		}
 
 		return rechargers.add(pos);
+	}
+	
+	public Integer defaultMove(){
+		
+		return 0;
 	}
 
 	public void run(ArrayList<Position> neighbors) {

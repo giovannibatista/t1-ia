@@ -166,7 +166,6 @@ public class Matrix {
 				Trash trash = new Trash(img, trashType, position);
 				matrix[trash.getPosition().getX()][trash.getPosition().getY()] = trash;
 			}
-
 		}
 	}
 
