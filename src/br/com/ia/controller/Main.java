@@ -3,8 +3,7 @@ package br.com.ia.controller;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
+
 import org.primefaces.context.RequestContext;
 
 @ViewScoped
@@ -31,14 +30,14 @@ public class Main {
 
 		RequestContext.getCurrentInstance().update("agents");
 	}
-	
+
 	public void createMatrixTestMoving() {
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
 		matrix.createMatrixTestMoving();
 		RequestContext.getCurrentInstance().update("agents");
 	}
-	
-	public void next(){
+
+	public void next() {
 		matrix.next();
 		RequestContext.getCurrentInstance().update("agents");
 	}

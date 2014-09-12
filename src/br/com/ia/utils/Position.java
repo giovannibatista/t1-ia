@@ -23,18 +23,12 @@ public class Position {
 
 		Position otherPair = (Position) other;
 
-		return (
-			(
-				this.x == otherPair.x
-				|| (this.x != null && otherPair.x != null && this.x.equals(otherPair.x))
-			) && (
-				this.y == otherPair.y
-				|| (this.y != null && otherPair.y != null && this.y.equals(otherPair.y))
-			)
-		);
+		return ((this.x == otherPair.x || (this.x != null
+				&& otherPair.x != null && this.x.equals(otherPair.x))) && (this.y == otherPair.y || (this.y != null
+				&& otherPair.y != null && this.y.equals(otherPair.y))));
 	}
-	
-	public static Position getRandomPosition(Integer seed){
+
+	public static Position getRandomPosition(Integer seed) {
 		Position position = null;
 		Integer x = (int) (Math.random() * seed);
 		Integer y = (int) (Math.random() * seed);
@@ -61,5 +55,5 @@ public class Position {
 	public void setY(Integer y) {
 		this.y = y;
 	}
-	
+
 }

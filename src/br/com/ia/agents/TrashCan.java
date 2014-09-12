@@ -9,7 +9,8 @@ public class TrashCan extends Agent {
 	private Integer capacity;
 	private TrashType color;
 
-	public TrashCan(String name, String icon, Integer capacity, TrashType color, Position position) {
+	public TrashCan(String name, String icon, Integer capacity,
+			TrashType color, Position position) {
 		super(name, icon, position);
 		this.capacity = capacity;
 		this.color = color;

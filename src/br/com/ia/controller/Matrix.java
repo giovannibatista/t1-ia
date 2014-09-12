@@ -69,7 +69,7 @@ public class Matrix {
 
 		insertTrashes();
 	}
-	
+
 	public void createMatrixTestMoving() {
 		matrix = new Block[rows][columns];
 		for (int i = 0; i < matrix.length; i++) {
@@ -84,18 +84,18 @@ public class Matrix {
 
 		matrix[position.getX()][position.getY()] = collector;
 		collectors.add(collector);
-		
-		
+
 	}
-	
-	public void next(){
+
+	public void next() {
 		Collector col = collectors.get(0);
-		matrix[col.getPosition().getX()][col.getPosition().getY()] = new Block(col.getPosition());
+		matrix[col.getPosition().getX()][col.getPosition().getY()] = new Block(
+				col.getPosition());
 		col.getPosition().setX(col.getPosition().getX());
-		if(col.getPosition().getY() < columns - 1)
-			col.getPosition().setY(col.getPosition().getY()+1);
-		else{
-			col.getPosition().setX(col.getPosition().getX() +1);
+		if (col.getPosition().getY() < columns - 1)
+			col.getPosition().setY(col.getPosition().getY() + 1);
+		else {
+			col.getPosition().setX(col.getPosition().getX() + 1);
 			col.getPosition().setY(0);
 		}
 		matrix[col.getPosition().getX()][col.getPosition().getY()] = col;
@@ -127,7 +127,10 @@ public class Matrix {
 
 		matrix[trashCan.getPosition().getX()][trashCan.getPosition().getY()] = trashCan;
 
-		// TODO: Adicionar Position da TrashCan nos Collectors;
+		for (Collector collector : collectors) {
+			collector.addTrashCan(trashCan.getColor(), trashCan.getPosition()
+					.getX(), trashCan.getPosition().getY());
+		}
 	}
 
 	private void insertRecharges() {
@@ -140,7 +143,10 @@ public class Matrix {
 
 		matrix[recharger.getPosition().getX()][recharger.getPosition().getY()] = recharger;
 
-		// TODO: Adicionar Position da TrashCan nos Collectors;
+		for (Collector collector : collectors) {
+			collector.addRecharger(recharger.getPosition().getX(), recharger
+					.getPosition().getY());
+		}
 	}
 
 	private void insertTrashes() {

@@ -3,7 +3,7 @@ package br.com.ia.agents;
 import br.com.ia.utils.Position;
 
 public class Recharger extends Agent {
-	
+
 	private Collector[] collectors;
 	private static String icon = "img/recharger.png";
 

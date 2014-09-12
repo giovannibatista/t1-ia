@@ -6,11 +6,11 @@ public class Block {
 
 	private Position position;
 	private String icon;
-	
+
 	public Block(Integer x, Integer y) {
 		this.position = new Position(x, y);
 	}
-	
+
 	public Block(Position position) {
 		this.position = position;
 	}
@@ -19,7 +19,7 @@ public class Block {
 		this.icon = icon;
 		this.position = new Position(x, y);
 	}
-	
+
 	public Block(String icon, Position position) {
 		this.icon = icon;
 		this.position = position;
@@ -28,7 +28,7 @@ public class Block {
 	public Position getPosition() {
 		return position;
 	}
-	
+
 	public String toString() {
 		return "BLCK";
 	}
@@ -44,6 +44,5 @@ public class Block {
 	public void setPosition(Position position) {
 		this.position = position;
 	}
-	
-	
+
 }

@@ -25,17 +25,11 @@ public class PositionTrashCan {
 
 		PositionTrashCan otherPair = (PositionTrashCan) other;
 
-		return (
-			(
-				this.x == otherPair.x
-				|| (this.x != null && otherPair.x != null && this.x.equals(otherPair.x))
-			) && (
-				this.y == otherPair.y
-				|| (this.y != null && otherPair.y != null && this.y.equals(otherPair.y))
-			)
-		);
+		return ((this.x == otherPair.x || (this.x != null
+				&& otherPair.x != null && this.x.equals(otherPair.x))) && (this.y == otherPair.y || (this.y != null
+				&& otherPair.y != null && this.y.equals(otherPair.y))));
 	}
-	
+
 	public String toString() {
 		return "(" + x + ", " + y + ")";
 	}
@@ -47,11 +41,11 @@ public class PositionTrashCan {
 	public void setX(Integer x) {
 		this.x = x;
 	}
-	
+
 	public Integer getY() {
 		return y;
 	}
-	
+
 	public void setY(Integer y) {
 		this.y = y;
 	}
@@ -63,5 +57,5 @@ public class PositionTrashCan {
 	public void setTrashType(TrashType trashType) {
 		this.trashType = trashType;
 	}
-	
+
 }
