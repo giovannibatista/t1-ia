@@ -5,10 +5,21 @@ function hideButton(button){
 	document.getElementById('insertRecharges').style.display='';*/
 }
 
+function createMatrix(){
+	console.info('Chamando createMatix...');
+	createMatix();
+}
 
-function test(){
-	
-	console.info('Chamando testeRemonte...')
-	testRemote();
-	
+function createMatrixTestMoving(){
+	console.info('Chamando createMatrixTestMoving...');
+	createMatrixTestMoving();
+}
+
+function nextBlock(){
+	console.info('Chamando next...');
+	setInterval(function(){
+		console.info('Chamando next...');
+		next();
+	}, 1000);
+
 }

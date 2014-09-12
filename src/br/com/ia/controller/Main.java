@@ -25,10 +25,21 @@ public class Main {
 		amountRechargers = 1;
 	}
 
-	public void createMatix() {
+	public void createMatrix() {
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
-		matrix.createMatix();
+		matrix.createMatrix();
 
+		RequestContext.getCurrentInstance().update("agents");
+	}
+	
+	public void createMatrixTestMoving() {
+		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
+		matrix.createMatrixTestMoving();
+		RequestContext.getCurrentInstance().update("agents");
+	}
+	
+	public void next(){
+		matrix.next();
 		RequestContext.getCurrentInstance().update("agents");
 	}
 

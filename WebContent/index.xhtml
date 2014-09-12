@@ -35,9 +35,20 @@
 
 			<p:separator />
 
-			<p:remoteCommand name="testRemote"
-				actionListener="#{main.createMatix}" update="@form :tableAgents" />
-			<input type="button" onclick="test();" value="Gerar matriz" />
+			<p:remoteCommand name="createMatrix"
+				actionListener="#{main.createMatrix}" update="@form :tableAgents" />
+				
+			<p:remoteCommand name="createMatrixTestMoving"
+				actionListener="#{main.createMatrixTestMoving}" update="@form :tableAgents" />
+				
+			<p:remoteCommand name="next"
+				actionListener="#{main.next}" update="@form :tableAgents" />
+				
+			<input type="button" onclick="createMatrix();" value="Gerar matriz" />
+			
+			<input type="button" onclick="createMatrixTestMoving();" value="Gerar matriz para teste" />
+			
+			<input type="button" onclick="nextBlock();" value="Mover..." />
 
 
 		</p:panel>

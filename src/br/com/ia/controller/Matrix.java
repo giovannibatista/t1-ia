@@ -45,7 +45,7 @@ public class Matrix {
 		this.amountRechargers = amountRechargers;
 	}
 
-	public void createMatix() {
+	public void createMatrix() {
 		matrix = new Block[rows][columns];
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
@@ -68,6 +68,37 @@ public class Matrix {
 		}
 
 		insertTrashes();
+	}
+	
+	public void createMatrixTestMoving() {
+		matrix = new Block[rows][columns];
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				if (matrix[i][j] == null) {
+					matrix[i][j] = new Block(i, j);
+				}
+			}
+		}
+		Position position = new Position(0, 0);
+		Collector collector = new Collector("Coletor", position);
+
+		matrix[position.getX()][position.getY()] = collector;
+		collectors.add(collector);
+		
+		
+	}
+	
+	public void next(){
+		Collector col = collectors.get(0);
+		matrix[col.getPosition().getX()][col.getPosition().getY()] = new Block(col.getPosition());
+		col.getPosition().setX(col.getPosition().getX());
+		if(col.getPosition().getY() < columns - 1)
+			col.getPosition().setY(col.getPosition().getY()+1);
+		else{
+			col.getPosition().setX(col.getPosition().getX() +1);
+			col.getPosition().setY(0);
+		}
+		matrix[col.getPosition().getX()][col.getPosition().getY()] = col;
 	}
 
 	private void insertCollector(Integer index) {
