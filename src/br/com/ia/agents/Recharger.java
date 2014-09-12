@@ -7,13 +7,9 @@ public class Recharger extends Agent {
 	private Collector[] collectors;
 	private static String icon = "img/recharger.png";
 
-	public Recharger(String name, Integer axisX, Integer axisY) {
-		super(name, icon, axisY, axisY);
-		collectors = new Collector[2];
-	}
-
 	public Recharger(Position position) {
-		super(position);
+		super(icon, position);
+		collectors = new Collector[2];
 	}
 
 	public Collector[] getCollectors() {

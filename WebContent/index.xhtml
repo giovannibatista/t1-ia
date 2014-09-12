@@ -18,27 +18,27 @@
 		<p:panel header="Coleta Seletiva de Lixo">
 			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
-					<p:outputLabel for="amountCollectors" value="Quantidade de coletores" />
+					<p:outputLabel for="amountCollectors"
+						value="Quantidade de coletores" />
 					<p:inputText id="amountCollectors" value="#{main.amountCollectors}" />
-					
+
 					<p:outputLabel for="amountTrashCans" value="Quantidade de lixeiras" />
 					<p:inputText id="amountTrashCans" value="#{main.amountTrashCans}" />
 
-					<p:outputLabel for="amountRechargers" value="Quantidade de recargas" />
+					<p:outputLabel for="amountRechargers"
+						value="Quantidade de recargas" />
 					<p:inputText id="amountRechargers" value="#{main.amountRechargers}" />
-					
+
 				</h:panelGrid>
 
 			</h:panelGrid>
 
 			<p:separator />
 
-			<p:commandButton value="Gerar matriz" actionListener="#{main.createMatix}"
-				update="@form :tableAgents" onclick="hideButton(this)" />
-				
-				<p:remoteCommand name="testRemote" actionListener="#{main.createMatix}" update="@form :tableAgents"/>
-				<input type="button" onclick="test();" value="teste"/>
-			
+			<p:remoteCommand name="testRemote"
+				actionListener="#{main.createMatix}" update="@form :tableAgents" />
+			<input type="button" onclick="test();" value="Gerar matriz" />
+
 
 		</p:panel>
 	</h:form>
@@ -48,8 +48,7 @@
 				<tr>
 					<ui:repeat value="#{firstLevel}" var="secondLevel"
 						rendered="#{!empty firstLevel}">
-						<td><img src="#{secondLevel.icon}"
-							alt="" class="icon" /></td>
+						<td><img src="#{secondLevel.icon}" alt="" class="icon" /></td>
 					</ui:repeat>
 				</tr>
 			</ui:repeat>

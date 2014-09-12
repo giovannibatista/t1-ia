@@ -26,9 +26,6 @@ public class Main {
 	}
 
 	public void createMatix() {
-		amountCollectors = 1;
-		amountTrashCans = 4;
-		amountRechargers = 1;
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
 		matrix.createMatix();
 

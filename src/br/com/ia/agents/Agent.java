@@ -15,8 +15,8 @@ public abstract class Agent extends Block {
 		this.name = name;
 	}
 
-	public Agent(Position position) {
-		super(position);
+	public Agent(String icon, Position position) {
+		super(icon, position);
 	}
 
 	public String getName() {

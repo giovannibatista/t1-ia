@@ -1,9 +1,6 @@
 package br.com.ia.controller;
 
-import br.com.ia.agents.Agent;
-import br.com.ia.agents.Block;
 import br.com.ia.agents.Collector;
-import br.com.ia.agents.Trash;
 import br.com.ia.utils.Position;
 
 public class Program {
