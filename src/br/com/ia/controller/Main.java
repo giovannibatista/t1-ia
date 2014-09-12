@@ -12,11 +12,10 @@ import org.primefaces.context.RequestContext;
 public class Main {
 
 	private Matrix matrix;
-	
+
 	private Integer amountCollectors;
 	private Integer amountTrashCans;
 	private Integer amountRechargers;
-	
 
 	@PostConstruct
 	public void init() {
@@ -25,14 +24,14 @@ public class Main {
 		amountTrashCans = 4;
 		amountRechargers = 1;
 	}
-	
+
 	public void createMatix() {
 		amountCollectors = 1;
 		amountTrashCans = 4;
 		amountRechargers = 1;
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
 		matrix.createMatix();
-		
+
 		RequestContext.getCurrentInstance().update("agents");
 	}
 
@@ -67,10 +66,4 @@ public class Main {
 	public void setAmountRechargers(Integer amountRechargers) {
 		this.amountRechargers = amountRechargers;
 	}
-	
-	
-	
-	
-
-
 }

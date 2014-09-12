@@ -9,6 +9,10 @@ public class Collector extends Agent {
 	private ArrayList<Position> trashCans;
 	private ArrayList<Position> rechargers;
 	
+	private ArrayList<Position> neighbors;
+	
+	private String status;
+	
 	private static String icon = "img/collector.png";
 
 	public Collector(String name, int axisX, int axisY) {
@@ -41,5 +45,9 @@ public class Collector extends Agent {
 		}
 		
 		return rechargers.add(pos);
+	}
+	
+	public void run(ArrayList<Position> neighbors) {
+		
 	}
 }

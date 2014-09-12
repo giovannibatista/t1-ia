@@ -9,7 +9,7 @@ import br.com.ia.agents.Recharger;
 import br.com.ia.agents.Trash;
 import br.com.ia.agents.TrashCan;
 import br.com.ia.utils.Position;
-import br.com.ia.utils.TrashType ;
+import br.com.ia.utils.TrashType;
 import br.com.ia.utils.TrashTypeGenerator;
 
 public class Matrix {
@@ -35,7 +35,8 @@ public class Matrix {
 		collectors = new ArrayList<Collector>();
 	}
 
-	public Matrix(Integer amountCollectors, Integer amountTrashCans, Integer amountRechargers) {
+	public Matrix(Integer amountCollectors, Integer amountTrashCans,
+			Integer amountRechargers) {
 		columns = 15;
 		rows = columns;
 		collectors = new ArrayList<Collector>();
@@ -57,7 +58,7 @@ public class Matrix {
 		for (int i = 0; i < amountCollectors; i++) {
 			insertCollector(i);
 		}
-		
+
 		for (int i = 0; i < amountTrashCans; i++) {
 			insertTrashCan();
 		}
@@ -65,21 +66,21 @@ public class Matrix {
 		for (int i = 0; i < amountRechargers; i++) {
 			insertRecharges();
 		}
-		
+
 		insertTrashes();
 	}
 
 	private void insertCollector(Integer index) {
 		Position position = Position.getRandomPosition(rows);
-		
+
 		if (hasElement(position))
 			insertCollector(index);
-		
+
 		Collector collector = new Collector("Coletor" + index, position);
-		
+
 		matrix[position.getX()][position.getY()] = collector;
 		collectors.add(collector);
-		
+
 	}
 
 	private void insertTrashCan() {
@@ -90,14 +91,15 @@ public class Matrix {
 
 		TrashType trashCanType = TrashTypeGenerator.next();
 		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
-		TrashCan trashCan = new TrashCan("Lixeira", img, 10, TrashTypeGenerator.next(),position);
+		TrashCan trashCan = new TrashCan("Lixeira", img, 10,
+				TrashTypeGenerator.next(), position);
 
 		matrix[trashCan.getPosition().getX()][trashCan.getPosition().getY()] = trashCan;
 
-		//TODO: Adicionar Position da TrashCan nos Collectors;
+		// TODO: Adicionar Position da TrashCan nos Collectors;
 	}
-	
-	private  void insertRecharges() {
+
+	private void insertRecharges() {
 		Position position = Position.getRandomPosition(rows);
 
 		if (hasElement(position))
@@ -107,36 +109,35 @@ public class Matrix {
 
 		matrix[recharger.getPosition().getX()][recharger.getPosition().getY()] = recharger;
 
-		//TODO: Adicionar Position da TrashCan nos Collectors;
+		// TODO: Adicionar Position da TrashCan nos Collectors;
 	}
 
-	private void insertTrashes(){
-		Integer agentsInMatrix = (rows/**rows*/) - (amountTrashCans + amountRechargers + amountCollectors);
+	private void insertTrashes() {
+		Integer agentsInMatrix = (rows/** rows */
+		) - (amountTrashCans + amountRechargers + amountCollectors);
 		Integer amountTrashes = (int) (Math.random() * agentsInMatrix);
-		
-		if(amountTrashes == 0)
+
+		if (amountTrashes == 0)
 			insertTrashes();
-		
-		
+
 		for (int i = 0; i < amountTrashes; i++) {
 			Position position = Position.getRandomPosition(rows);
-			
-			if (!hasElement(position)){
+
+			if (!hasElement(position)) {
 				TrashType trashType = TrashTypeGenerator.getRandomTrashType();
 				String img = TrashTypeGenerator.getTrashIcon(trashType);
 				Trash trash = new Trash(img, trashType, position);
 				matrix[trash.getPosition().getX()][trash.getPosition().getY()] = trash;
 			}
-				
-					
+
 		}
 	}
-	
+
 	private boolean hasElement(Position position) {
 		Block block = matrix[position.getX()][position.getY()];
-		return (block instanceof Agent || block instanceof Trash || block instanceof TrashCan || block instanceof Recharger);
+		return (block instanceof Agent || block instanceof Trash
+				|| block instanceof TrashCan || block instanceof Recharger);
 	}
-
 
 	public Block[][] getMatrix() {
 		return matrix;
