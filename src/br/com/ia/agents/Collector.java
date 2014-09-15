@@ -17,6 +17,8 @@ public class Collector extends Agent {
 	private ArrayList<Position> visitedBlocks;
 
 	String status;
+	int battery;
+	boolean batteryLow;
 
 	private static String icon = "img/collector.png";
 
@@ -46,38 +48,38 @@ public class Collector extends Agent {
 		return rechargers.add(pos);
 	}
 
-	public ArrayList<Position> getNeighbors(Matrix matrix) {
-		neighbors = new ArrayList<Position>();
-
-		for (int x = -2; x <= 2; x++) {
-			for (int y = -2; y <= 2; y++) {
-				if ((((this.getPosition().getX() + x) >= 0) && (this
-						.getPosition().getX() + x < matrix.getMatrix()[x].length))
-						&& ((this.getPosition().getY() + y) >= 0)
-						&& (this.getPosition().getY() + y < matrix.getMatrix()[x].length)) {
-					neighbors.add(new Position(this.getPosition().getX() + x, this.getPosition().getY() + y));
-
-				}
-
-			}
-		}
-
-		/*
-		 * if (((celula.X + i) >= 0 && (celula.X + i <
-		 * matrix.Ambient.GetLength(0))) && (celula.Y + j) >= 0 && (celula.Y + j
-		 * < matrix.Ambient.GetLength(1)))
-		 * NeighborsCells.Add(matrix.Ambient[celula.X + i, celula.Y + j]); }
-		 */
-
-		return neighbors;
-	}
-
 	public Integer defaultMove() {
 
 		return 0;
 	}
 
 	public void run(ArrayList<Position> neighbors) {
-
+		if ((neighbors == null) || (neighbors.size() == 0)) {
+			// No romm to walk. :(
+		}
+		
+		this.neighbors = neighbors;
+	}
+	
+	/**
+	 * Plans next step.
+	 */
+	private void plan() {
+		if (status == "goingRecharge") {
+			// Just keep going
+		} else if (status == "wander") {
+			if (batteryLow) {
+				status = "walkRecharge";
+				return;
+			}
+			
+		}
+	}
+	
+	/**
+	 * Act according to what was planned
+	 */
+	private void act() {
+		
 	}
 }

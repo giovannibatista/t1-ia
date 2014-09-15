@@ -88,8 +88,8 @@ public class Matrix {
 	}
 
 	public void next() {
-		Collector col = collectors.get(0);
-		col.getNeighbors(this);
+		//Collector col = collectors.get(0);
+		//col.getNeighbors(this);
 		
 		
 		/*
@@ -104,6 +104,47 @@ public class Matrix {
 		}
 		matrix[col.getPosition().getX()][col.getPosition().getY()] = col;
 		*/
+	}
+	
+	/**
+	 * Get available neighbors of a specific position.
+	 * @param pos
+	 * @return list of neighbors
+	 */
+	public ArrayList<Position> getNeighbors(Position pos) {
+		ArrayList<Position> neighbors = new ArrayList<Position>();
+
+		for (int x = -2; x <= 2; x++) {
+			for (int y = -2; y <= 2; y++) {
+				// same position
+				if ((x == 0) && (y == 0)) {
+					continue;
+				}
+				
+				int relX = (pos.getX() + x);
+				int relY = (pos.getY() + y);
+				
+				// out of bounds for column
+				if ((relX < 0) || (relX >= columns)) {
+					continue;
+				}
+				
+				// out of bounds for row
+				if ((relY < 0) || (relY >= rows)) {
+					continue;
+				}
+				
+				// occupied
+				if  (matrix[relX][relY] instanceof Agent) {
+					continue;
+				}
+				
+				// if it made this far, add :)
+				neighbors.add(new Position(relX, relY));
+			}
+		}
+
+		return neighbors;
 	}
 
 	private void insertCollector(Integer index) {
@@ -126,14 +167,12 @@ public class Matrix {
 
 		TrashType trashCanType = TrashTypeGenerator.next();
 		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
-		TrashCan trashCan = new TrashCan("Lixeira", img, 10,
-				trashCanType, position);
+		TrashCan trashCan = new TrashCan("Lixeira", img, 10, trashCanType, position);
 
 		matrix[trashCan.getPosition().getX()][trashCan.getPosition().getY()] = trashCan;
 
 		for (Collector collector : collectors) {
-			collector.addTrashCan(trashCan.getColor(), trashCan.getPosition()
-					.getX(), trashCan.getPosition().getY());
+			collector.addTrashCan(trashCan.getColor(), trashCan.getPosition().getX(), trashCan.getPosition().getY());
 		}
 	}
 
