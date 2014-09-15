@@ -1,8 +1,10 @@
 package br.com.ia.agents;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import br.com.ia.controller.Matrix;
+import br.com.ia.utils.CollectorStatus;
 import br.com.ia.utils.Position;
 import br.com.ia.utils.PositionTrashCan;
 import br.com.ia.utils.TrashType;
@@ -12,20 +14,35 @@ public class Collector extends Agent {
 	private ArrayList<PositionTrashCan> trashCans;
 	private ArrayList<Position> rechargers;
 
-	private ArrayList<Position> neighbors;
-	private ArrayList<Position> possibleBlocks;
-	private ArrayList<Position> visitedBlocks;
+	private ArrayList<Block> neighbors;
+	private ArrayList<Block> possibleBlocks;
+	private ArrayList<Block> visitedBlocks;
+	private List<Trash> trashes;
 
-	String status;
-	int battery;
-	boolean batteryLow;
+	private CollectorStatus status;
+
+	private int battery;
+	private boolean batteryLow;
+
+	private Integer capacity;
+	private boolean isFull;
+	
+	private Trash nearTrash;
 
 	private static String icon = "img/collector.png";
+
+	public Collector(String name, Integer capacity, Position position) {
+		super(name, icon, position);
+		trashCans = new ArrayList<PositionTrashCan>();
+		rechargers = new ArrayList<Position>();
+		trashes = Arrays.asList(new Trash[capacity]);
+	}
 
 	public Collector(String name, Position position) {
 		super(name, icon, position);
 		trashCans = new ArrayList<PositionTrashCan>();
 		rechargers = new ArrayList<Position>();
+		trashes = Arrays.asList(new Trash[(int) Math.random() * 20]);
 	}
 
 	public boolean addTrashCan(TrashType trashType, int x, int y) {
@@ -53,33 +70,97 @@ public class Collector extends Agent {
 		return 0;
 	}
 
-	public void run(ArrayList<Position> neighbors) {
+	public void run(ArrayList<Block> neighbors) {
 		if ((neighbors == null) || (neighbors.size() == 0)) {
 			// No romm to walk. :(
+			return;
 		}
-		
 		this.neighbors = neighbors;
+
+		if(this.isBatteryLow()){
+			//TODO:verificar bateria
+		}else if(this.isFull){
+			status = CollectorStatus.LOOKINGTRASHCAN;
+			//TODO: Ver o que ele deve fazer
+		}if(hasTrash()){
+			status = CollectorStatus.LOOKINGTRASH;
+		}else{
+			status = CollectorStatus.WANDER;
+		}
+		plan();
 	}
-	
+
 	/**
 	 * Plans next step.
 	 */
 	private void plan() {
-		if (status == "goingRecharge") {
+		if (status.equals(CollectorStatus.LOOKINGTRASH)) {
 			// Just keep going
-		} else if (status == "wander") {
+		} else if (status.equals(CollectorStatus.WANDER)) {
 			if (batteryLow) {
-				status = "walkRecharge";
+				status = CollectorStatus.LOOKINGRECHARGER;
 				return;
 			}
-			
+
 		}
 	}
-	
+
 	/**
 	 * Act according to what was planned
 	 */
 	private void act() {
-		
+
 	}
+
+	private boolean hasTrash() {
+		for (Block block : neighbors) {
+			if (block instanceof Trash) {
+				//TODO: Verificar o lixo mais perto
+				nearTrash = (Trash) block;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public CollectorStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(CollectorStatus status) {
+		this.status = status;
+	}
+
+	public int getBattery() {
+		return battery;
+	}
+
+	public void setBattery(int battery) {
+		this.battery = battery;
+	}
+
+	public boolean isBatteryLow() {
+		return batteryLow;
+	}
+
+	public void setBatteryLow(boolean batteryLow) {
+		this.batteryLow = batteryLow;
+	}
+
+	public Integer getCapacity() {
+		return capacity;
+	}
+
+	public void setCapacity(Integer capacity) {
+		this.capacity = capacity;
+	}
+
+	public boolean isFull() {
+		return isFull;
+	}
+
+	public void setIsFull(boolean isFull) {
+		this.isFull = isFull;
+	}
+
 }

@@ -111,8 +111,8 @@ public class Matrix {
 	 * @param pos
 	 * @return list of neighbors
 	 */
-	public ArrayList<Position> getNeighbors(Position pos) {
-		ArrayList<Position> neighbors = new ArrayList<Position>();
+	public ArrayList<Block> getNeighbors(Position pos) {
+		ArrayList<Block> neighbors = new ArrayList<Block>();
 
 		for (int x = -2; x <= 2; x++) {
 			for (int y = -2; y <= 2; y++) {
@@ -137,10 +137,10 @@ public class Matrix {
 				// occupied
 				if  (matrix[relX][relY] instanceof Agent) {
 					continue;
-				}
+				} 
 				
 				// if it made this far, add :)
-				neighbors.add(new Position(relX, relY));
+				neighbors.add(matrix[relX][relY]);
 			}
 		}
 
