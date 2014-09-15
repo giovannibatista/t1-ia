@@ -59,7 +59,6 @@ public class Matrix {
 			insertCollector(i);
 		}
 
-		//insertDefaultTrashCan();
 		for (int i = 0; i < amountTrashCans; i++) {
 			insertTrashCan();
 		}
@@ -90,6 +89,10 @@ public class Matrix {
 
 	public void next() {
 		Collector col = collectors.get(0);
+		col.getNeighbors(this);
+		
+		
+		/*
 		matrix[col.getPosition().getX()][col.getPosition().getY()] = new Block(
 				col.getPosition());
 		col.getPosition().setX(col.getPosition().getX());
@@ -100,6 +103,7 @@ public class Matrix {
 			col.getPosition().setY(0);
 		}
 		matrix[col.getPosition().getX()][col.getPosition().getY()] = col;
+		*/
 	}
 
 	private void insertCollector(Integer index) {
@@ -114,52 +118,6 @@ public class Matrix {
 		collectors.add(collector);
 
 	}
-
-	private void insertDefaultTrashCan() {
-
-		Position position1 = Position.getRandomPosition(rows);
-		Position position2 = Position.getRandomPosition(rows);
-		Position position3 = Position.getRandomPosition(rows);
-		Position position4 = Position.getRandomPosition(rows);
-
-		if (hasElement(position1) || hasElement(position2)
-				|| hasElement(position3) || hasElement(position4))
-			insertTrashCan();
-
-		String img = TrashTypeGenerator.getTrashCanIcon(TrashType.GREEN);
-		TrashCan trashCan1 = new TrashCan("Lixeira", img, 10, TrashType.GREEN,
-				position1);
-
-		img = TrashTypeGenerator.getTrashCanIcon(TrashType.BLUE);
-		TrashCan trashCan2 = new TrashCan("Lixeira", img, 10, TrashType.BLUE,
-				position2);
-
-		img = TrashTypeGenerator.getTrashCanIcon(TrashType.RED);
-		TrashCan trashCan3 = new TrashCan("Lixeira", img, 10, TrashType.RED,
-				position3);
-
-		img = TrashTypeGenerator.getTrashCanIcon(TrashType.YELLOW);
-		TrashCan trashCan4 = new TrashCan("Lixeira", img, 10, TrashType.YELLOW,
-				position4);
-
-		matrix[trashCan1.getPosition().getX()][trashCan1.getPosition().getY()] = trashCan1;
-		matrix[trashCan2.getPosition().getX()][trashCan2.getPosition().getY()] = trashCan2;
-		matrix[trashCan3.getPosition().getX()][trashCan3.getPosition().getY()] = trashCan3;
-		matrix[trashCan4.getPosition().getX()][trashCan4.getPosition().getY()] = trashCan4;
-
-		for (Collector collector : collectors) {
-			collector.addTrashCan(trashCan1.getColor(), trashCan1.getPosition()
-					.getX(), trashCan1.getPosition().getY());
-			collector.addTrashCan(trashCan2.getColor(), trashCan2.getPosition()
-					.getX(), trashCan1.getPosition().getY());
-			collector.addTrashCan(trashCan3.getColor(), trashCan3.getPosition()
-					.getX(), trashCan1.getPosition().getY());
-			collector.addTrashCan(trashCan4.getColor(), trashCan4.getPosition()
-					.getX(), trashCan1.getPosition().getY());
-		}
-
-	}
-
 	private void insertTrashCan() {
 		Position position = Position.getRandomPosition(rows);
 

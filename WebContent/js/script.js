@@ -16,10 +16,10 @@ function createMatrixTestMoving(){
 }
 
 function nextBlock(){
-	console.info('Chamando next...');
+	/*console.info('Chamando next...');
 	setInterval(function(){
 		console.info('Chamando next...');
-		next();
-	}, 1000);
+	}, 1000);*/
+	next();
 
 }
