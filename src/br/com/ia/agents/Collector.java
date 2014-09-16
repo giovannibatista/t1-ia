@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import br.com.ia.utils.CollectorStatus;
+import br.com.ia.utils.Direction;
 import br.com.ia.utils.Position;
 import br.com.ia.utils.PositionTrashCan;
 import br.com.ia.utils.TrashType;
@@ -72,6 +73,7 @@ public class Collector extends Agent {
 		}
 
 		this.neighbors = neighbors;
+		this.possibleBlocks = getPossibleBlocks();
 
 		if (this.isBatteryLow()) {
 			// TODO:verificar bateria
@@ -107,6 +109,7 @@ public class Collector extends Agent {
 		case LOOKINGTRASHCAN:
 			break;
 		case WANDER:
+
 			break;
 		default:
 			break;
@@ -122,11 +125,68 @@ public class Collector extends Agent {
 
 	}
 
+	//Incompleto....
+	public Block defaultMovement(){
+		Block block = null;
+		if(possibleBlocks.size() ==0)
+			return block;
+		
+		for (Block possibleBlock : possibleBlocks) {
+			if(validateLimit(possibleBlock, Direction.RIGHT)){
+				block = possibleBlock;
+				
+				visitedBlocks.add(possibleBlock);
+				possibleBlocks.remove(possibleBlock);
+				
+				block.getPosition().setX(block.getPosition().getX() + 1);
+				continue;
+			}else if(validateLimit(possibleBlock, Direction.DOWN)){
+				block = possibleBlock;
+				block.getPosition().setY(block.getPosition().getY() + 1);
+				continue;
+			}
+		}
+
+		return block;
+	}
+
+	//Incompleto...
+	private boolean validateLimit(Block block, Direction direction) {
+		for (Block neighbor : neighbors) {
+			switch (direction) {
+			case UP:
+				if (neighbor.getPosition().getX() == block.getPosition().getX()
+						&& neighbor.getPosition().getY() == block.getPosition()
+								.getY() - 1)
+					return true;
+			case RIGHT:
+				if (neighbor.getPosition().getX() == block.getPosition().getX() + 1
+						&& neighbor.getPosition().getY() == block.getPosition()
+								.getY())
+					return true;
+			case DOWN:
+				if (neighbor.getPosition().getX() == block.getPosition().getX()
+						&& neighbor.getPosition().getY() == block.getPosition()
+								.getY() + 1)
+					return true;
+			case LEFT:
+				if (neighbor.getPosition().getX() == block.getPosition().getX() - 1
+						&& neighbor.getPosition().getY() == block.getPosition()
+								.getY())
+					return true;
+			default:
+				break;
+			}
+		}
+
+		return true;
+	}
+
 	private boolean hasTrash() {
 		for (Block block : neighbors) {
 			if (block instanceof Trash) {
 				// TODO: Verificar o lixo mais perto
-				objective = (Block)block;
+				objective = (Block) block;
 				return true;
 			}
 		}
@@ -134,8 +194,8 @@ public class Collector extends Agent {
 		return false;
 	}
 
-	public void getPossibleBlocks(){
-		possibleBlocks = new ArrayList<Block>();
+	private ArrayList<Block> getPossibleBlocks() {
+		ArrayList<Block> possibleBlocks = new ArrayList<Block>();
 
 		for (Block block : neighbors) {
 			for (int x = -1; x <= 1; x++) {
@@ -147,12 +207,14 @@ public class Collector extends Agent {
 					int relX = (getPosition().getX() + x);
 					int relY = (getPosition().getY() + y);
 
-					if(block.getPosition().getX() == relX && block.getPosition().getY() == relY){
+					if (block.getPosition().getX() == relX
+							&& block.getPosition().getY() == relY) {
 						possibleBlocks.add(block);
 					}
 				}
 			}
 		}
+		return possibleBlocks;
 	}
 
 	public CollectorStatus getStatus() {

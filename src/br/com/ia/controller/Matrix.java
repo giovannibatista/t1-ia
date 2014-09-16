@@ -1,6 +1,7 @@
 package br.com.ia.controller;
 
 import java.util.ArrayList;
+
 import br.com.ia.agents.Agent;
 import br.com.ia.agents.Block;
 import br.com.ia.agents.Collector;
@@ -8,8 +9,6 @@ import br.com.ia.agents.Recharger;
 import br.com.ia.agents.Trash;
 import br.com.ia.agents.TrashCan;
 import br.com.ia.utils.Position;
-import br.com.ia.utils.TrashType;
-import br.com.ia.utils.TrashTypeGenerator;
 
 public class Matrix {
 
