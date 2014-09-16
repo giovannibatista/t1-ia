@@ -12,35 +12,37 @@ import br.com.ia.utils.TrashType;
 
 public class Collector extends Agent {
 
+	private static String icon = "img/collector.png";
+	
+	/* KNOWLEDGE ABOUT THE WORLD */
 	private ArrayList<Position> glassTrashCans;
-	private List<Trash> glassTrash;
-	
 	private ArrayList<Position> metalTrashCans;
-	private List<Trash> metalTrash;
-	
 	private ArrayList<Position> paperTrashCans;
-	private List<Trash> paperTrash;
-	
 	private ArrayList<Position> plasticTrashCans;
-	private List<Trash> plasticTrash;
-	
 	private ArrayList<Position> rechargers;
 
 	private ArrayList<Block> neighbors;
+	
+	/* KNOWLEDGE ABOUT ITSELF */
+	private ArrayList<Trash> glassTrash;
+	private ArrayList<Trash> metalTrash;
+	private ArrayList<Trash> paperTrash;
+	private ArrayList<Trash> plasticTrash;
+	
+	private int maxBatteryCapacity;
+	private int maxTrashCapacity;
+	
+	private int batteryCharge;
+	
+	private CollectorStatus status;
+	
+	/* CONTROL VARIABLES */	
+	private Position objective;
+	private TrashType trashType;
 	private ArrayList<Block> possibleBlocks;
 	private ArrayList<Block> visitedBlocks;
 	
-	private CollectorStatus status;
-
-	private int batteryCharge;
-
-	private Integer capacity;
-	private boolean isFull;
-
-	private Position objective;
-
-	private static String icon = "img/collector.png";
-
+	/* CONSTRUCTOR */
 	public Collector(String name, Integer capacity, Position position) {
 		super(name, icon, position);
 
@@ -54,10 +56,15 @@ public class Collector extends Agent {
 		plasticTrashCans = new ArrayList<Position>();
 		
 		// garbage
-		glassTrash = Arrays.asList(new Trash[capacity]);
-		metalTrash = Arrays.asList(new Trash[capacity]);
-		paperTrash = Arrays.asList(new Trash[capacity]);
-		plasticTrash = Arrays.asList(new Trash[capacity]);
+		glassTrash = new ArrayList<Trash>();
+		metalTrash = new ArrayList<Trash>();
+		paperTrash = new ArrayList<Trash>();
+		plasticTrash = new ArrayList<Trash>();
+		
+		maxBatteryCapacity = capacity;
+		maxTrashCapacity = capacity;
+		
+		batteryCharge = capacity;
 	}
 
 	public Collector(String name, Position position) {
@@ -72,13 +79,19 @@ public class Collector extends Agent {
 		paperTrashCans = new ArrayList<Position>();
 		plasticTrashCans = new ArrayList<Position>();
 		
-		int rdn = (int) Math.random() * 20;
-		glassTrash = Arrays.asList(new Trash[rdn]);
-		metalTrash = Arrays.asList(new Trash[rdn]);
-		paperTrash = Arrays.asList(new Trash[rdn]);
-		plasticTrash = Arrays.asList(new Trash[rdn]);
+		glassTrash = new ArrayList<Trash>();
+		metalTrash = new ArrayList<Trash>();
+		paperTrash = new ArrayList<Trash>();
+		plasticTrash = new ArrayList<Trash>();
+		
+		int rnd = (int) Math.random() * 20;
+		maxBatteryCapacity = rnd;
+		maxTrashCapacity = rnd;
+		
+		batteryCharge = rnd;
 	}
 
+	/* CONFIGURATION METHODS */
 	public boolean addTrashCan(TrashType trashType, int x, int y) {
 		Position pos = new Position(x, y);
 
@@ -127,6 +140,7 @@ public class Collector extends Agent {
 		return rechargers.add(pos);
 	}
 
+	/* PUBLIC METHODS */
 	/**
 	 * Execute action
 	 * @param neighbors
@@ -162,30 +176,33 @@ public class Collector extends Agent {
 		act();
 	}
 	
+	/**
+	 * Observe its state and prepare to plan the next move.
+	 */
 	private void observe() {
 		if (status != CollectorStatus.LOOKINGRECHARGER && batteryLow()) {
 			status = CollectorStatus.LOOKINGRECHARGER;
 			return;
 		}
 		
-		//if (trashFull()) {
-			
-		//}
+		if (hasFullTrash()) {
+			status = CollectorStatus.LOOKINGTRASHCAN;
+		}
 	}
 	
 	/**
-	 * Plans next step.
+	 * Plans the next move.
 	 */
 	private void plan() {
 		switch (status) {
 			case LOOKINGRECHARGER:
-				Position.getPseudoNearest(this.getPosition(), rechargers);
+				objective = Position.getPseudoNearest(this.getPosition(), rechargers);
 				break;
 			case WALKINGRECHARGER:
 				
 				break;
 			case LOOKINGTRASHCAN:
-				//getNearestTrashCan();
+				objective = getNearestTrashCan();
 				break;
 			case WALKINGTRASHCAN:
 				
@@ -194,7 +211,7 @@ public class Collector extends Agent {
 				
 				break;
 			case WANDER:
-	
+				
 				break;
 			default:
 				// Oops. :(
@@ -312,72 +329,56 @@ public class Collector extends Agent {
 			}
 		}
 		
-		return batteryCharge <= ((int)res) + 5;
+		return maxBatteryCapacity <= ((int)res) + 5;
 	}
 	
-	private boolean trashCanFull() {
-		// TODO: Impl.
+	private boolean hasFullTrash() {
+		
+		if (glassTrash.size() == maxTrashCapacity) {
+			trashType = TrashType.GLASS;
+			return true;
+		}
+		
+		if (metalTrash.size() == maxTrashCapacity) {
+			trashType = TrashType.METAL;
+			return true;
+		}
+		
+		if (paperTrash.size() == maxTrashCapacity) {
+			trashType = TrashType.PAPER;
+			return true;
+		}
+		
+		if (plasticTrash.size() == maxTrashCapacity) {
+			trashType = TrashType.PLASTIC;
+			return true;
+		}
+		
 		return false;
 	}
 	
-	private void getNearestTrashCan(TrashType type) {
-		switch (type) {
+	private Position getNearestTrashCan() {
+		switch (trashType) {
 			case GLASS:
-				objective = Position.getPseudoNearest(this.getPosition(), glassTrashCans);
-				break;
+				return Position.getPseudoNearest(this.getPosition(), glassTrashCans);
 			case METAL:
-				objective = Position.getPseudoNearest(this.getPosition(), metalTrashCans);
-				break;
+				return Position.getPseudoNearest(this.getPosition(), metalTrashCans);
 			case PAPER:
-				objective = Position.getPseudoNearest(this.getPosition(), paperTrashCans);
-				break;
+				return Position.getPseudoNearest(this.getPosition(), paperTrashCans);
 			case PLASTIC:
-				objective = Position.getPseudoNearest(this.getPosition(), plasticTrashCans);
-				break;
+				return Position.getPseudoNearest(this.getPosition(), plasticTrashCans);
 			default:
 				// Oops. :(
 				break;
 		}
+		
+		return null;
 	}
 	
-	
+
 	
 	
 	public CollectorStatus getStatus() {
 		return status;
-	}
-
-	public void setStatus(CollectorStatus status) {
-		this.status = status;
-	}
-	
-
-	public int getBattery() {
-		return batteryCharge;
-	}
-	
-
-	public void setBatteryCharge(int batteryCharge) {
-		this.batteryCharge = batteryCharge;
-	}
-	
-
-	public Integer getCapacity() {
-		return capacity;
-	}
-	
-
-	public void setCapacity(Integer capacity) {
-		this.capacity = capacity;
-	}
-	
-
-	public boolean isFull() {
-		return isFull;
-	}
-	
-
-	public void setIsFull(boolean isFull) {
-		this.isFull = isFull;
 	}
 }
