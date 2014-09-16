@@ -27,7 +27,7 @@ public class Collector extends Agent {
 	private Integer capacity;
 	private boolean isFull;
 
-	private Trash nearTrash;
+	private Block objective;
 
 	private static String icon = "img/collector.png";
 
@@ -65,10 +65,6 @@ public class Collector extends Agent {
 		return rechargers.add(pos);
 	}
 
-	public Integer defaultMove() {
-		return 0;
-	}
-
 	public void run(ArrayList<Block> neighbors) {
 		if ((neighbors == null) || (neighbors.size() == 0)) {
 			// No romm to walk. :(
@@ -91,26 +87,26 @@ public class Collector extends Agent {
 		}
 		
 		plan();
+		
+		act();
 	}
 
 	/**
 	 * Plans next step.
 	 */
 	private void plan() {
+		if (status != CollectorStatus.LOOKINGRECHARGER && batteryLow) {
+			status = CollectorStatus.LOOKINGRECHARGER;
+		}
+		
 		switch (status) {
 			case LOOKINGTRASH:
-				if (batteryLow) {
-					status = CollectorStatus.LOOKINGRECHARGER;
-				}
 				break;
 			case LOOKINGRECHARGER:
 				break;
 			case LOOKINGTRASHCAN:
 				break;
 			case WANDER:
-				if (batteryLow) {
-					status = CollectorStatus.LOOKINGRECHARGER;
-				}
 				break;
 			default:
 				break;
@@ -125,18 +121,33 @@ public class Collector extends Agent {
 	private void act() {
 
 	}
-
+	
 	private boolean hasTrash() {
 		for (Block block : neighbors) {
 			if (block instanceof Trash) {
 				// TODO: Verificar o lixo mais perto
-				nearTrash = (Trash) block;
+				objective = (Block)block;
 				return true;
 			}
 		}
+		
 		return false;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public CollectorStatus getStatus() {
 		return status;
 	}

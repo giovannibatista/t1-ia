@@ -14,9 +14,12 @@ import br.com.ia.utils.TrashTypeGenerator;
 public class Matrix {
 
 	private Block[][] matrix;
+	
 	private ArrayList<Collector> collectors;
-	private Integer columns;
-	private Integer rows;
+	private ArrayList<TrashCan> trashCans;
+	private ArrayList<Recharger> rechargers;
+	
+	private Integer size;
 
 	private Integer amountCollectors;
 	private Integer amountTrashCans;
@@ -26,26 +29,28 @@ public class Matrix {
 
 	public Matrix() {
 		// Valores iniciais
-		columns = 15;
-		rows = columns;
+		size = 15;
 		amountCollectors = 1;
 		amountTrashCans = 4;
 		amountRechargers = 1;
 		collectors = new ArrayList<Collector>();
+		trashCans = new ArrayList<TrashCan>();
+		rechargers = new ArrayList<Recharger>();
 	}
 
 	public Matrix(Integer amountCollectors, Integer amountTrashCans,
 			Integer amountRechargers) {
-		columns = 15;
-		rows = columns;
-		collectors = new ArrayList<Collector>();
+		size = 15;
 		this.amountCollectors = amountCollectors;
 		this.amountTrashCans = amountTrashCans;
 		this.amountRechargers = amountRechargers;
+		collectors = new ArrayList<Collector>();
+		trashCans = new ArrayList<TrashCan>();
+		rechargers = new ArrayList<Recharger>();
 	}
 
 	public void createMatrix() {
-		matrix = new Block[rows][columns];
+		matrix = new Block[size][size];
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
 				if (matrix[i][j] == null) {
@@ -53,24 +58,10 @@ public class Matrix {
 				}
 			}
 		}
-
-		for (int i = 0; i < amountCollectors; i++) {
-			insertCollector(i);
-		}
-
-		for (int i = 0; i < amountTrashCans; i++) {
-			insertTrashCan();
-		}
-
-		for (int i = 0; i < amountRechargers; i++) {
-			insertRecharges();
-		}
-
-		insertTrashes();
 	}
 
 	public void createMatrixTestMoving() {
-		matrix = new Block[rows][columns];
+		matrix = new Block[size][size];
 		for (int i = 0; i < matrix.length; i++) {
 			for (int j = 0; j < matrix[i].length; j++) {
 				if (matrix[i][j] == null) {
@@ -78,31 +69,27 @@ public class Matrix {
 				}
 			}
 		}
+		
 		Position position = new Position(0, 0);
 		Collector collector = new Collector("Coletor", position);
 
 		matrix[position.getX()][position.getY()] = collector;
 		collectors.add(collector);
-
 	}
-
-	public void next() {
-		//Collector col = collectors.get(0);
-		//col.getNeighbors(this);
+	
+	public void add(Block b) {
+		if (b == null)
+			return;
 		
-		
-		/*
-		matrix[col.getPosition().getX()][col.getPosition().getY()] = new Block(
-				col.getPosition());
-		col.getPosition().setX(col.getPosition().getX());
-		if (col.getPosition().getY() < columns - 1)
-			col.getPosition().setY(col.getPosition().getY() + 1);
-		else {
-			col.getPosition().setX(col.getPosition().getX() + 1);
-			col.getPosition().setY(0);
+		if (b instanceof Collector) {
+			collectors.add((Collector) b);
+		} else if (b instanceof TrashCan) {
+			trashCans.add((TrashCan) b);
+		} else if (b instanceof Recharger) {
+			rechargers.add((Recharger) b);
 		}
-		matrix[col.getPosition().getX()][col.getPosition().getY()] = col;
-		*/
+		
+		matrix[b.getPosition().getX()][b.getPosition().getY()] = b;
 	}
 	
 	/**
@@ -124,12 +111,12 @@ public class Matrix {
 				int relY = (pos.getY() + y);
 				
 				// out of bounds for column
-				if ((relX < 0) || (relX >= columns)) {
+				if ((relX < 0) || (relX >= size)) {
 					continue;
 				}
 				
 				// out of bounds for row
-				if ((relY < 0) || (relY >= rows)) {
+				if ((relY < 0) || (relY >= size)) {
 					continue;
 				}
 				
@@ -146,77 +133,22 @@ public class Matrix {
 		return neighbors;
 	}
 
-	private void insertCollector(Integer index) {
-		Position position = Position.getRandomPosition(rows);
-
-		if (hasElement(position))
-			insertCollector(index);
-
-		Collector collector = new Collector("Coletor" + index, position);
-
-		matrix[position.getX()][position.getY()] = collector;
-		collectors.add(collector);
-
-	}
-	
-	private void insertTrashCan() {
-		Position position = Position.getRandomPosition(rows);
-
-		if (hasElement(position))
-			insertTrashCan();
-
-		TrashType trashCanType = TrashTypeGenerator.next();
-		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
-		TrashCan trashCan = new TrashCan("Lixeira", img, 10, trashCanType, position);
-
-		matrix[trashCan.getPosition().getX()][trashCan.getPosition().getY()] = trashCan;
-
-		for (Collector collector : collectors) {
-			collector.addTrashCan(trashCan.getColor(), trashCan.getPosition().getX(), trashCan.getPosition().getY());
-		}
-	}
-
-	private void insertRecharges() {
-		Position position = Position.getRandomPosition(rows);
-
-		if (hasElement(position))
-			insertRecharges();
-
-		Recharger recharger = new Recharger(position);
-
-		matrix[recharger.getPosition().getX()][recharger.getPosition().getY()] = recharger;
-
-		for (Collector collector : collectors) {
-			collector.addRecharger(recharger.getPosition().getX(), recharger
-					.getPosition().getY());
-		}
-	}
-
-	private void insertTrashes() {
-		Integer freeBlocks = (columns * rows) - (amountTrashCans + amountRechargers + amountCollectors);
-		Integer amountTrashes = (int)(Math.random() * freeBlocks) + (rows / 2);
-
-		if (amountTrashes == 0)
-			insertTrashes();
-
-		for (int i = 0; i < amountTrashes; i++) {
-			Position position = Position.getRandomPosition(rows);
-
-			if (!hasElement(position)) {
-				TrashType trashType = TrashTypeGenerator.getRandomTrashType();
-				String img = TrashTypeGenerator.getTrashIcon(trashType);
-				Trash trash = new Trash(img, trashType, position);
-				matrix[trash.getPosition().getX()][trash.getPosition().getY()] = trash;
-			}
-		}
-	}
-
-	private boolean hasElement(Position position) {
+	public boolean hasElement(Position position) {
 		Block block = matrix[position.getX()][position.getY()];
-		return (block instanceof Agent || block instanceof Trash
-				|| block instanceof TrashCan || block instanceof Recharger);
+		return (block instanceof Agent
+			|| block instanceof Trash
+			|| block instanceof TrashCan
+			|| block instanceof Recharger);
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
 	public Block[][] getMatrix() {
 		return matrix;
 	}
@@ -225,20 +157,8 @@ public class Matrix {
 		this.matrix = matrix;
 	}
 
-	public Integer getColumns() {
-		return columns;
-	}
-
-	public void setColumns(Integer columns) {
-		this.columns = columns;
-	}
-
-	public Integer getRows() {
-		return rows;
-	}
-
-	public void setRows(Integer rows) {
-		this.rows = rows;
+	public Integer getSize() {
+		return size;
 	}
 
 	public Integer getAmountCollectors() {

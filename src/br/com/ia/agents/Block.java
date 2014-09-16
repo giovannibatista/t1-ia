@@ -30,7 +30,7 @@ public class Block {
 	}
 
 	public String toString() {
-		return "BLCK";
+		return "(" + position.getX() + ", " + position.getY() + ")";
 	}
 
 	public String getIcon() {
