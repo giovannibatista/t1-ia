@@ -66,7 +66,6 @@ public class Collector extends Agent {
 	}
 
 	public Integer defaultMove() {
-
 		return 0;
 	}
 
@@ -75,6 +74,7 @@ public class Collector extends Agent {
 			// No romm to walk. :(
 			return;
 		}
+		
 		this.neighbors = neighbors;
 
 		if (this.isBatteryLow()) {
@@ -83,11 +83,13 @@ public class Collector extends Agent {
 			status = CollectorStatus.LOOKINGTRASHCAN;
 			// TODO: Ver o que ele deve fazer
 		}
+		
 		if (hasTrash()) {
 			status = CollectorStatus.LOOKINGTRASH;
 		} else {
 			status = CollectorStatus.WANDER;
 		}
+		
 		plan();
 	}
 
@@ -95,32 +97,26 @@ public class Collector extends Agent {
 	 * Plans next step.
 	 */
 	private void plan() {
-
 		switch (status) {
-		case LOOKINGTRASH:
-			if (batteryLow) {
-				status = CollectorStatus.LOOKINGRECHARGER;
-				return;
-			}
-			break;
-		case WANDER:
-			if (batteryLow) {
-				status = CollectorStatus.LOOKINGRECHARGER;
-				return;
-			}
-
-			break;
-		case LOOKINGRECHARGER:
-
-			break;
-		case LOOKINGTRASHCAN:
-
-			break;
-
-		default:
-			break;
+			case LOOKINGTRASH:
+				if (batteryLow) {
+					status = CollectorStatus.LOOKINGRECHARGER;
+				}
+				break;
+			case LOOKINGRECHARGER:
+				break;
+			case LOOKINGTRASHCAN:
+				break;
+			case WANDER:
+				if (batteryLow) {
+					status = CollectorStatus.LOOKINGRECHARGER;
+				}
+				break;
+			default:
+				break;
 		}
 
+		return;
 	}
 
 	/**
@@ -180,5 +176,4 @@ public class Collector extends Agent {
 	public void setIsFull(boolean isFull) {
 		this.isFull = isFull;
 	}
-
 }

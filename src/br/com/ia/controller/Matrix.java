@@ -1,7 +1,6 @@
 package br.com.ia.controller;
 
 import java.util.ArrayList;
-
 import br.com.ia.agents.Agent;
 import br.com.ia.agents.Block;
 import br.com.ia.agents.Collector;
@@ -159,6 +158,7 @@ public class Matrix {
 		collectors.add(collector);
 
 	}
+	
 	private void insertTrashCan() {
 		Position position = Position.getRandomPosition(rows);
 
@@ -193,9 +193,8 @@ public class Matrix {
 	}
 
 	private void insertTrashes() {
-		Integer agentsInMatrix = (rows/** rows */
-		) - (amountTrashCans + amountRechargers + amountCollectors);
-		Integer amountTrashes = (int) (Math.random() * agentsInMatrix);
+		Integer freeBlocks = (columns * rows) - (amountTrashCans + amountRechargers + amountCollectors);
+		Integer amountTrashes = (int)(Math.random() * freeBlocks) + (rows / 2);
 
 		if (amountTrashes == 0)
 			insertTrashes();
