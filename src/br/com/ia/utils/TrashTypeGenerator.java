@@ -27,35 +27,36 @@ public class TrashTypeGenerator {
 	public static String getTrashCanIcon(TrashType trashType) {
 
 		switch (trashType) {
-		case GREEN:
-			return "img/trashCanEmptyGreen.png";
-		case BLUE:
-			return "img/trashCanEmptyBlue.png";
-		case YELLOW:
-			return "img/trashCanEmptyYellow.png";
-		case RED:
-			return "img/trashCanEmptyRed.png";
-		default:
-			break;
+			case GLASS:
+				return "img/trashCanEmptyGreen.png";
+			case PAPER:
+				return "img/trashCanEmptyBlue.png";
+			case METAL:
+				return "img/trashCanEmptyYellow.png";
+			case PLASTIC:
+				return "img/trashCanEmptyRed.png";
+			default:
+				break;
 		}
+		
 		return "";
 	}
 
 	public static String getTrashIcon(TrashType trashType) {
 
 		switch (trashType) {
-		case GREEN:
-			return "img/trashGreen.png";
-		case BLUE:
-			return "img/trashBlue.png";
-		case YELLOW:
-			return "img/trashYellow.png";
-		case RED:
-			return "img/trashRed.png";
-		default:
-			break;
+			case GLASS:
+				return "img/trashGreen.png";
+			case PAPER:
+				return "img/trashBlue.png";
+			case METAL:
+				return "img/trashYellow.png";
+			case PLASTIC:
+				return "img/trashRed.png";
+			default:
+				break;
 		}
+		
 		return "";
 	}
-
 }

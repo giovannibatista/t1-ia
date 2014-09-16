@@ -1,5 +1,7 @@
 package br.com.ia.utils;
 
+import java.util.ArrayList;
+
 public class Position {
 	private Integer x;
 	private Integer y;
@@ -35,7 +37,32 @@ public class Position {
 		position = new Position(x, y);
 		return position;
 	}
+	
+	public static double getDiference(Position origin, Position destiny) {
+		double res = 0;
+		
+		if (origin == null || destiny == null) {
+			return res;
+		}
+		
+		return Math.sqrt(Math.pow((destiny.getX() - origin.getX()), 2) + Math.pow((destiny.getY() - origin.getY()), 2));
+	}
 
+	public static Position getPseudoNearest(Position origin, ArrayList<Position> destinies) {
+		Position res = null;
+		double distance = Double.MAX_VALUE;
+		
+		for (Position position : destinies) {
+			double p = getDiference(origin, position);
+			if (p < distance) {
+				distance = p;
+				res = position;
+			}
+		}
+		
+		return res;
+	}
+	
 	public String toString() {
 		return "(" + x + ", " + y + ")";
 	}
