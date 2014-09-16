@@ -70,7 +70,7 @@ public class Collector extends Agent {
 			// No romm to walk. :(
 			return;
 		}
-		
+
 		this.neighbors = neighbors;
 
 		if (this.isBatteryLow()) {
@@ -79,15 +79,15 @@ public class Collector extends Agent {
 			status = CollectorStatus.LOOKINGTRASHCAN;
 			// TODO: Ver o que ele deve fazer
 		}
-		
+
 		if (hasTrash()) {
 			status = CollectorStatus.LOOKINGTRASH;
 		} else {
 			status = CollectorStatus.WANDER;
 		}
-		
+
 		plan();
-		
+
 		act();
 	}
 
@@ -98,18 +98,18 @@ public class Collector extends Agent {
 		if (status != CollectorStatus.LOOKINGRECHARGER && batteryLow) {
 			status = CollectorStatus.LOOKINGRECHARGER;
 		}
-		
+
 		switch (status) {
-			case LOOKINGTRASH:
-				break;
-			case LOOKINGRECHARGER:
-				break;
-			case LOOKINGTRASHCAN:
-				break;
-			case WANDER:
-				break;
-			default:
-				break;
+		case LOOKINGTRASH:
+			break;
+		case LOOKINGRECHARGER:
+			break;
+		case LOOKINGTRASHCAN:
+			break;
+		case WANDER:
+			break;
+		default:
+			break;
 		}
 
 		return;
@@ -121,7 +121,7 @@ public class Collector extends Agent {
 	private void act() {
 
 	}
-	
+
 	private boolean hasTrash() {
 		for (Block block : neighbors) {
 			if (block instanceof Trash) {
@@ -130,24 +130,31 @@ public class Collector extends Agent {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void getPossibleBlocks(){
+		possibleBlocks = new ArrayList<Block>();
+
+		for (Block block : neighbors) {
+			for (int x = -1; x <= 1; x++) {
+				for (int y = -1; y <= 1; y++) {
+					if ((x == 0) && (y == 0)) {
+						continue;
+					}
+
+					int relX = (getPosition().getX() + x);
+					int relY = (getPosition().getY() + y);
+
+					if(block.getPosition().getX() == relX && block.getPosition().getY() == relY){
+						possibleBlocks.add(block);
+					}
+				}
+			}
+		}
+	}
+
 	public CollectorStatus getStatus() {
 		return status;
 	}

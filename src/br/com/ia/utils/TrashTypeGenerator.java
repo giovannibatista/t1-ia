@@ -6,7 +6,7 @@ public class TrashTypeGenerator {
 	private static TrashType[] trashTypes = TrashType.values();
 
 	public static TrashType getRandomTrashType() {
-		Integer index = (int) (Math.random() * trashTypes.length - 1);
+		Integer index = (int) (Math.random() * trashTypes.length);
 		return trashTypes[index];
 	}
 
