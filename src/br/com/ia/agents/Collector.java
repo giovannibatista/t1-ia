@@ -159,7 +159,7 @@ public class Collector extends Agent {
 
 		this.neighbors = neighbors;
 		this.possibleBlocks = getPossibleBlocks();
-		
+
 		observe();
 
 		plan();
@@ -306,18 +306,6 @@ public class Collector extends Agent {
 		}
 		
 		return null;
-	}
-
-	private boolean hasTrash() {
-		for (Block block : neighbors) {
-			if (block instanceof Trash) {
-				// TODO: Verificar o lixo mais perto
-				objective = block.getPosition();
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private ArrayList<Block> getPossibleBlocks() {
