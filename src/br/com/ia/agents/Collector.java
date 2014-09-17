@@ -154,21 +154,7 @@ public class Collector extends Agent {
 		this.neighbors = neighbors;
 		this.possibleBlocks = getPossibleBlocks();
 
-		/*
-		if (this.isBatteryLow()) {
-			// TODO:verificar bateria
-		} else if (this.isFull) {
-			status = CollectorStatus.LOOKINGTRASHCAN;
-			// TODO: Ver o que ele deve fazer
-		}
-
-		if (hasTrash()) {
-			status = CollectorStatus.LOOKINGTRASH;
-		} else {
-			status = CollectorStatus.WANDER;
-		}
-		*/
-		
+			
 		observe();
 
 		plan();
@@ -283,18 +269,6 @@ public class Collector extends Agent {
 		}
 
 		return true;
-	}
-
-	private boolean hasTrash() {
-		for (Block block : neighbors) {
-			if (block instanceof Trash) {
-				// TODO: Verificar o lixo mais perto
-				objective = block.getPosition();
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private ArrayList<Block> getPossibleBlocks() {
