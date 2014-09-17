@@ -179,6 +179,8 @@ public class Collector extends Agent {
 		if (hasFullTrash()) {
 			status = CollectorStatus.LOOKINGTRASHCAN;
 		}
+		
+		status = CollectorStatus.WANDER;
 	}
 	
 	/**
@@ -215,7 +217,7 @@ public class Collector extends Agent {
 	 */
 	private Block act() {
 		for (Block block : possibleBlocks) {
-			if (block.getPosition().equals(getPosition())) {
+			if (block.getPosition().equals(objective)) {
 				return block;
 			}
 		}
@@ -262,8 +264,8 @@ public class Collector extends Agent {
 	
 	private Block goRight() {
 		for (Block possibleBlock : possibleBlocks) {	
-			if (possibleBlock.getPosition().getY() == getPosition().getY()
-				&& possibleBlock.getPosition().getX() > getPosition().getX()) {
+			if (possibleBlock.getPosition().getX() == getPosition().getX()
+				&& possibleBlock.getPosition().getY() > getPosition().getY()) {
 				direction = Direction.RIGHT;
 				return possibleBlock;
 			}
@@ -274,8 +276,8 @@ public class Collector extends Agent {
 	
 	private Block goDown() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getX() == getPosition().getX()
-				&& possibleBlock.getPosition().getY() > getPosition().getY()) {
+			if (possibleBlock.getPosition().getX() > getPosition().getX()
+				&& possibleBlock.getPosition().getY() == getPosition().getY()) {
 				direction = Direction.DOWN;
 				return possibleBlock;
 			}
@@ -286,8 +288,8 @@ public class Collector extends Agent {
 	
 	private Block goLeft() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getY() == getPosition().getY()
-				&& possibleBlock.getPosition().getX() < getPosition().getX()) {
+			if (possibleBlock.getPosition().getX() == getPosition().getX()
+				&& possibleBlock.getPosition().getY() < getPosition().getY()) {
 				direction = Direction.LEFT;
 				return possibleBlock;
 			}
@@ -298,8 +300,8 @@ public class Collector extends Agent {
 	
 	private Block goUp() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getX() == getPosition().getX()
-				&& possibleBlock.getPosition().getY() < getPosition().getY()) {
+			if (possibleBlock.getPosition().getX() < getPosition().getX()
+				&& possibleBlock.getPosition().getY() == getPosition().getY()) {
 				direction = Direction.UP;
 				return possibleBlock;
 			}

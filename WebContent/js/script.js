@@ -11,7 +11,6 @@ function createMatrix(){
 }
 
 function createMatrixTestMoving(){
-	console.info('Chamando createMatrixTestMoving...');
 	createMatrixTestMoving();
 }
 

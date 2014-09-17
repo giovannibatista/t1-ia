@@ -36,13 +36,11 @@ public class Main {
 		amountCollectors = 1;
 		amountTrashCans = 4;
 		amountRechargers = 1;
-		
-		collectors = new ArrayList<Collector>();
-		trashCans = new ArrayList<TrashCan>();
-		rechargers = new ArrayList<Recharger>();
+		initArrayList();
 	}
 
 	public void createMatrix() {
+		initArrayList();
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
 		matrix.createMatrix();
 
@@ -51,12 +49,19 @@ public class Main {
 	}
 
 	public void createMatrixTestMoving() {
+		amountCollectors = 1;
+		amountTrashCans = 0;
+		amountRechargers = 0;
+		initArrayList();
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
-		matrix.createMatrixTestMoving();
+		matrix.createMatrix();
+		//matrix.createMatrixTestMoving();
 		
 		createEnvironment();
 		RequestContext.getCurrentInstance().update("agents");
 	}
+	
+	
 
 	public void next() {
 		for (Collector c : collectors) {
@@ -88,8 +93,8 @@ public class Main {
 
 		if (matrix.hasElement(position))
 			insertCollector(index);
-
-		Collector collector = new Collector("Coletor" + index, position);
+		//TODO: Alterar capacidade da lixeira
+		Collector collector = new Collector("Coletor" + index,10, position);
 
 		matrix.add(collector);
 		collectors.add(collector);
@@ -148,7 +153,11 @@ public class Main {
 		}
 	}
 	
-	
+	private void initArrayList(){
+		collectors = new ArrayList<Collector>();
+		trashCans = new ArrayList<TrashCan>();
+		rechargers = new ArrayList<Recharger>();
+	}
 	
 	
 	public Matrix getMatrix() {

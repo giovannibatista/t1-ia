@@ -58,23 +58,6 @@ public class Matrix {
 			}
 		}
 	}
-
-	public void createMatrixTestMoving() {
-		matrix = new Block[size][size];
-		for (int i = 0; i < matrix.length; i++) {
-			for (int j = 0; j < matrix[i].length; j++) {
-				if (matrix[i][j] == null) {
-					matrix[i][j] = new Block(i, j);
-				}
-			}
-		}
-		
-		Position position = new Position(0, 0);
-		Collector collector = new Collector("Coletor", position);
-
-		matrix[position.getX()][position.getY()] = collector;
-		collectors.add(collector);
-	}
 	
 	public void add(Block b) {
 		if (b == null)
@@ -92,6 +75,10 @@ public class Matrix {
 	}
 	
 	public void move(Block from, Block to) {
+		
+		matrix[from.getPosition().getX()][from.getPosition().getY()] = new Block(from.getPosition());
+		from.setPosition(to.getPosition());
+		matrix[from.getPosition().getX()][from.getPosition().getY()] = from;
 		
 	}
 	
