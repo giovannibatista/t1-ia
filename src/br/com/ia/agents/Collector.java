@@ -242,6 +242,9 @@ public class Collector extends Agent {
 			
 			block = goLeft();
 			if (block != null) return block;
+			
+			block = goUp();
+			if (block != null) return block;
 		} else if (direction == Direction.DOWN) {
 			block = goLeft();
 			if (block != null) return block;
@@ -251,13 +254,29 @@ public class Collector extends Agent {
 			
 			block = goDown();
 			if (block != null) return block;
+			
+			block = goUp();
+			if (block != null) return block;
 		} else if (direction == Direction.LEFT) {
 			block = goLeft();
 			if (block != null) return block;
 			
 			block = goDown();
 			if (block != null) return block;
+			
+			block = goUp();
+			if (block != null) return block;
+		} else if (direction == Direction.UP) {
+			block = goRight();
+			if (block != null) return block;
+			
+			block = goLeft();
+			if (block != null) return block;
+			
+			block = goUp();
+			if (block != null) return block;
 		}
+		
 		
 		return block;
 	}
