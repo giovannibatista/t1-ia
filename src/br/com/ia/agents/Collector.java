@@ -36,6 +36,8 @@ public class Collector extends Agent {
 	
 	private CollectorStatus status;
 	
+	private Direction direction;
+	
 	/* CONTROL VARIABLES */	
 	private Position objective;
 	private TrashType trashType;
@@ -65,6 +67,8 @@ public class Collector extends Agent {
 		maxTrashCapacity = capacity;
 		
 		batteryCharge = capacity;
+		
+		direction = Direction.NONE;
 	}
 
 	public Collector(String name, Position position) {
@@ -89,6 +93,8 @@ public class Collector extends Agent {
 		maxTrashCapacity = rnd;
 		
 		batteryCharge = rnd;
+		
+		direction = Direction.NONE;
 	}
 
 	/* CONFIGURATION METHODS */
@@ -145,35 +151,20 @@ public class Collector extends Agent {
 	 * Execute action
 	 * @param neighbors
 	 */
-	public void run(ArrayList<Block> neighbors) {
+	public Block run(ArrayList<Block> neighbors) {
 		if ((neighbors == null) || (neighbors.size() == 0)) {
 			// No romm to walk. :(
-			return;
+			return null;
 		}
 
 		this.neighbors = neighbors;
 		this.possibleBlocks = getPossibleBlocks();
-
-		/*
-		if (this.isBatteryLow()) {
-			// TODO:verificar bateria
-		} else if (this.isFull) {
-			status = CollectorStatus.LOOKINGTRASHCAN;
-			// TODO: Ver o que ele deve fazer
-		}
-
-		if (hasTrash()) {
-			status = CollectorStatus.LOOKINGTRASH;
-		} else {
-			status = CollectorStatus.WANDER;
-		}
-		*/
 		
 		observe();
 
 		plan();
 
-		act();
+		return act();
 	}
 	
 	/**
@@ -211,78 +202,110 @@ public class Collector extends Agent {
 				
 				break;
 			case WANDER:
-				
+				objective = wander().getPosition();
 				break;
 			default:
 				// Oops. :(
 				break;
 		}
-
-		return;
 	}
 
 	/**
 	 * Act according to what was planned
 	 */
-	private void act() {
-
-	}
-
-	//Incompleto....
-	public Block defaultMovement(){
-		Block block = null;
-		if(possibleBlocks.size() ==0)
-			return block;
-		
-		for (Block possibleBlock : possibleBlocks) {
-			if(validateLimit(possibleBlock, Direction.RIGHT)){
-				block = possibleBlock;
-				
-				visitedBlocks.add(possibleBlock);
-				possibleBlocks.remove(possibleBlock);
-				
-				block.getPosition().setX(block.getPosition().getX() + 1);
-				continue;
-			}else if(validateLimit(possibleBlock, Direction.DOWN)){
-				block = possibleBlock;
-				block.getPosition().setY(block.getPosition().getY() + 1);
-				continue;
+	private Block act() {
+		for (Block block : possibleBlocks) {
+			if (block.getPosition().equals(getPosition())) {
+				return block;
 			}
 		}
+		
+		// A*
+		
+		return null;
+	}
 
+	private Block wander() {
+		Block block = null;
+		if (possibleBlocks.size() == 0) {
+			return block;
+		}
+		
+		if (direction == Direction.NONE || direction == Direction.RIGHT) {
+			block = goRight();
+			if (block != null) return block;
+			
+			block = goDown();
+			if (block != null) return block;
+			
+			block = goLeft();
+			if (block != null) return block;
+		} else if (direction == Direction.DOWN) {
+			block = goLeft();
+			if (block != null) return block;
+			
+			block = goRight();
+			if (block != null) return block;
+			
+			block = goDown();
+			if (block != null) return block;
+		} else if (direction == Direction.LEFT) {
+			block = goLeft();
+			if (block != null) return block;
+			
+			block = goDown();
+			if (block != null) return block;
+		}
+		
 		return block;
 	}
-
-	//Incompleto...
-	private boolean validateLimit(Block block, Direction direction) {
-		for (Block neighbor : neighbors) {
-			switch (direction) {
-			case UP:
-				if (neighbor.getPosition().getX() == block.getPosition().getX()
-						&& neighbor.getPosition().getY() == block.getPosition()
-								.getY() - 1)
-					return true;
-			case RIGHT:
-				if (neighbor.getPosition().getX() == block.getPosition().getX() + 1
-						&& neighbor.getPosition().getY() == block.getPosition()
-								.getY())
-					return true;
-			case DOWN:
-				if (neighbor.getPosition().getX() == block.getPosition().getX()
-						&& neighbor.getPosition().getY() == block.getPosition()
-								.getY() + 1)
-					return true;
-			case LEFT:
-				if (neighbor.getPosition().getX() == block.getPosition().getX() - 1
-						&& neighbor.getPosition().getY() == block.getPosition()
-								.getY())
-					return true;
-			default:
-				break;
+	
+	private Block goRight() {
+		for (Block possibleBlock : possibleBlocks) {	
+			if (possibleBlock.getPosition().getY() == getPosition().getY()
+				&& possibleBlock.getPosition().getX() > getPosition().getX()) {
+				direction = Direction.RIGHT;
+				return possibleBlock;
 			}
 		}
-
-		return true;
+		
+		return null;
+	}
+	
+	private Block goDown() {
+		for (Block possibleBlock : possibleBlocks) {
+			if (possibleBlock.getPosition().getX() == getPosition().getX()
+				&& possibleBlock.getPosition().getY() > getPosition().getY()) {
+				direction = Direction.DOWN;
+				return possibleBlock;
+			}
+		}
+		
+		return null;
+	}
+	
+	private Block goLeft() {
+		for (Block possibleBlock : possibleBlocks) {
+			if (possibleBlock.getPosition().getY() == getPosition().getY()
+				&& possibleBlock.getPosition().getX() < getPosition().getX()) {
+				direction = Direction.LEFT;
+				return possibleBlock;
+			}
+		}
+		
+		return null;
+	}
+	
+	private Block goUp() {
+		for (Block possibleBlock : possibleBlocks) {
+			if (possibleBlock.getPosition().getX() == getPosition().getX()
+				&& possibleBlock.getPosition().getY() < getPosition().getY()) {
+				direction = Direction.UP;
+				return possibleBlock;
+			}
+		}
+		
+		return null;
 	}
 
 	private boolean hasTrash() {
@@ -311,12 +334,13 @@ public class Collector extends Agent {
 					int relY = (getPosition().getY() + y);
 
 					if (block.getPosition().getX() == relX
-							&& block.getPosition().getY() == relY) {
+						&& block.getPosition().getY() == relY) {
 						possibleBlocks.add(block);
 					}
 				}
 			}
 		}
+		
 		return possibleBlocks;
 	}
 

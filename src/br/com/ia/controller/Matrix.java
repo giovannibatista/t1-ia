@@ -91,6 +91,10 @@ public class Matrix {
 		matrix[b.getPosition().getX()][b.getPosition().getY()] = b;
 	}
 	
+	public void move(Block from, Block to) {
+		
+	}
+	
 	/**
 	 * Get available neighbors of a specific position.
 	 * @param pos

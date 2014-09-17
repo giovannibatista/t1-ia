@@ -8,6 +8,7 @@ import javax.faces.bean.ViewScoped;
 
 import org.primefaces.context.RequestContext;
 
+import br.com.ia.agents.Block;
 import br.com.ia.agents.Collector;
 import br.com.ia.agents.Recharger;
 import br.com.ia.agents.Trash;
@@ -59,7 +60,8 @@ public class Main {
 
 	public void next() {
 		for (Collector c : collectors) {
-			c.run(matrix.getNeighbors(c.getPosition()));
+			Block b = c.run(matrix.getNeighbors(c.getPosition()));
+			matrix.move(c, b);
 		}
 		
 		RequestContext.getCurrentInstance().update("agents");
