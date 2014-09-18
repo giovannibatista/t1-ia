@@ -24,7 +24,11 @@ public class TrashCan extends Agent {
 	}
 	
 	public boolean isFull() {
-		return (capacity == used);
+		boolean isFull = capacity == used;
+		if(isFull){
+			setIcon("img/trashCanFull.png");
+		}
+		return isFull;
 	}
 
 	public TrashType getColor() {

@@ -179,7 +179,7 @@ public class Collector extends Agent {
 			return;
 		}
 
-		if (status == CollectorStatus.WALKINGTRASHCAN) {
+		if (status == CollectorStatus.WALKINGTRASHCAN || status == CollectorStatus.EMPTYING) {
 			return;
 		}
 
@@ -221,6 +221,9 @@ public class Collector extends Agent {
 			case RECHARGING:
 				System.out.println("Recarregando...");
 				break;
+			case EMPTYING:
+				System.out.println("Recarregando...");
+				break;
 			case WANDER:
 			default:
 				objective = wander().getPosition();
@@ -249,6 +252,15 @@ public class Collector extends Agent {
 				}
 			}
 		}
+		
+		if(status == CollectorStatus.WALKINGTRASHCAN || status == CollectorStatus.EMPTYING){
+			for (Block block : excludedBlocks) {
+				if (block.getPosition().equals(objective)) {
+					emptying(block);
+					return null;
+				}
+			}
+		}
 
 		ArrayList<Position> positions = new ArrayList<Position>();
 		for (Block block : possibleBlocks) {
@@ -268,26 +280,85 @@ public class Collector extends Agent {
 
 		return null;
 	}
+	
+	
+	//REFAZER A LOGICA DE TIRAR O LIXO DO COLETOR PARA LIXEIRA
+	private void emptying(Block block) {
+		TrashCan trashCan = (TrashCan) block.getAgent();
+
+		if(trashCan.isFull()){
+			System.out.println(trashCan.getName() + "está cheia!");
+			return;
+		}
+
+		if(trashCan.addTrash()){
+			switch (trashType) {
+			case GLASS:
+				if(!glassTrash.isEmpty())
+					glassTrash.remove(glassTrash.size());
+				else{
+					status = CollectorStatus.WANDER;
+					return;
+				}
+				break;
+			case METAL:
+				if(!metalTrash.isEmpty())
+					metalTrash.remove(metalTrash.size());
+				else{
+					status = CollectorStatus.WANDER;
+					return;
+				}
+				break;
+			case PAPER:
+				if(!paperTrash.isEmpty())
+					paperTrash.remove(paperTrash.size());
+				else{
+					status = CollectorStatus.WANDER;
+					return;
+				}
+				break;
+			case PLASTIC:
+				if(!paperTrash.isEmpty())
+					paperTrash.remove(paperTrash.size());
+				else{
+					status = CollectorStatus.WANDER;
+					return;
+				}
+				break;
+			default:
+				// Oops. :(
+				break;
+			}
+
+			status = CollectorStatus.EMPTYING;
+		}else{
+			
+		}
+			
+
+	}
+
 
 	private void recharge(Block block) {
 		Recharger recharger = (Recharger) block.getAgent();
-		if(recharger.isBusy()){
+		if(recharger.isBusy() || status != CollectorStatus.RECHARGING){
 			System.out.println("O carregador está ocupado :(.");
 			return;
 		}
 
-		if (status != CollectorStatus.RECHARGING) {
+		if(status != CollectorStatus.RECHARGING){
 			recharger.addCollector(this);
 		}
 
-		if (maxBatteryCapacity > batteryCharge) {
+		if(maxBatteryCapacity > batteryCharge){
 			batteryCharge++;
 			status = CollectorStatus.RECHARGING;
 			System.out.println("Bateria: " + batteryCharge + ">>" + maxBatteryCapacity);
-		} else {
+		}else{
 			status = CollectorStatus.WANDER;
 			recharger.removeCollector(this);
 		}
+
 	}
 
 	private void collectTrash() {

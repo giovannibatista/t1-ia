@@ -127,6 +127,9 @@ public class Main {
 			insertTrashCan(index);
 
 		TrashType trashCanType = TrashTypeGenerator.next();
+		if(trashCanType == TrashType.NONE){
+			trashCanType = TrashTypeGenerator.next();
+		}
 		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
 		TrashCan trashCan = new TrashCan("L" + index, img, maxTrashCanCapacity, trashCanType);
 
@@ -166,6 +169,9 @@ public class Main {
 
 			if (!matrix.hasAgent(position)) {
 				TrashType trashType = TrashTypeGenerator.getRandomTrashType();
+				if(trashType == TrashType.NONE){
+					trashType = TrashType.METAL;
+				}
 				String img = TrashTypeGenerator.getTrashIcon(trashType);
 				Trash trash = new Trash(trashType, img);
 				matrix.add(position, trash);

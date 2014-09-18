@@ -33,7 +33,7 @@ public class Recharger extends Agent {
 		return icon;
 	}
 
-	public static void setIcon(String icon) {
+	public void setIcon(String icon) {
 		Recharger.icon = icon;
 	}
 

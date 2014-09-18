@@ -17,6 +17,10 @@ public abstract class Agent {
 		return icon;
 	}
 	
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
 	public String getName() {
 		return name;
 	}
