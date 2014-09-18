@@ -75,7 +75,7 @@ public class Main {
 
 	public void next() {
 		for (Collector c : collectors) {
-			System.out.println("\nColetor: " + c.getName() + " em " + c.getPosition());
+			System.out.println("\nColetor: " + c.getName() + " em " + c.getPosition() + " Status: " + c.getStatus());
 			
 			Block from = matrix.getBlock(c.getPosition());
 			Block to = c.run(matrix.getNeighbors(c.getPosition()));
@@ -105,7 +105,7 @@ public class Main {
 			insertRechargers();
 		}
 	
-		insertTrashes();
+		insertTrash();
 	}
 	
 	private void insertCollector(Integer index) {
@@ -154,12 +154,12 @@ public class Main {
 		}
 	}
 	
-	private void insertTrashes() {
+	private void insertTrash() {
 		Integer freeBlocks = (matrix.getSize() ^ 2) - (amountTrashCans + amountRechargers + amountCollectors);
 		Integer amountTrashes = (int)(Math.random() * freeBlocks) + (matrix.getSize() / 2);
 
 		if (amountTrashes == 0)
-			insertTrashes();
+			insertTrash();
 
 		for (int i = 0; i < amountTrashes; i++) {
 			Position position = Position.getRandomPosition(matrix.getSize());

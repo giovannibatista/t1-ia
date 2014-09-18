@@ -41,7 +41,6 @@ public class Collector extends Agent {
 	private Position objective;
 	private TrashType trashType;
 	private ArrayList<Block> possibleBlocks;
-	private ArrayList<Block> visitedBlocks;
 	
 	/* CONSTRUCTOR */
 	public Collector(String name, Integer batteryCapacity, Integer trashCapacity, Block current) {
@@ -158,15 +157,24 @@ public class Collector extends Agent {
 	 * Observe its state and prepare to plan the next move.
 	 */
 	private void observe() {
-		if (status != CollectorStatus.LOOKINGRECHARGER && batteryLow()) {
+		if (status != CollectorStatus.LOOKINGRECHARGER &&
+				status != CollectorStatus.WALKINGRECHARGER && batteryLow()) {
 			System.out.println("* Precisa carregar, procurar por carregador");
 			status = CollectorStatus.LOOKINGRECHARGER;
+			return;
+		}
+		
+		if(status == CollectorStatus.WALKINGRECHARGER){
 			return;
 		}
 		
 		if (hasFullTrash()) {
 			status = CollectorStatus.LOOKINGTRASHCAN;
 			System.out.println("* Precisa esvaziar, procurar por lixeira");
+			return;
+		}
+		
+		if(status == CollectorStatus.WALKINGTRASHCAN){
 			return;
 		}
 		
@@ -184,10 +192,10 @@ public class Collector extends Agent {
 			case LOOKINGRECHARGER:
 				objective = Position.getPseudoNearest(currentBlock.getPosition(), rechargers);
 				status = CollectorStatus.WALKINGRECHARGER;
-				System.out.println("* Definiu ir para carregador em " + objective.toString());
+				System.out.println("* Definiu ir para o carregador em " + objective.toString());
 				break;
 			case WALKINGRECHARGER:
-				
+				System.out.println("* Indo para o carregador em " + objective.toString());
 				break;
 			case LOOKINGTRASHCAN:
 				objective = getNearestTrashCan();
@@ -228,6 +236,10 @@ public class Collector extends Agent {
 		ArrayList<Position> positions = new ArrayList<Position>();
 		for (Block block : possibleBlocks) {
 			if (block.getPosition().equals(objective)) {
+				if (status == CollectorStatus.WALKINGRECHARGER) {
+					recharge(block);
+					return null;
+				}
 				return block;
 			}
 			
@@ -244,6 +256,10 @@ public class Collector extends Agent {
 		return null;
 	}
 	
+	private void recharge(Block block) {
+		Recharger a = (Recharger) block.getAgent();
+	}
+
 	private void collectTrash() {
 		Trash trash = currentBlock.collectTrash();
 		switch (trash.getTrashType()) {

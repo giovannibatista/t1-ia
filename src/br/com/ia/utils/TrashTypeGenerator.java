@@ -12,7 +12,7 @@ public class TrashTypeGenerator {
 
 	public static TrashType next() {
 		TrashType trashType;
-		if (index < trashTypes.length) {
+		if (index < trashTypes.length - 1) {
 			trashType = trashTypes[index];
 			index++;
 		} else {
@@ -28,6 +28,7 @@ public class TrashTypeGenerator {
 
 		switch (trashType) {
 			case GLASS:
+			case NONE:
 				return "img/trashCanEmptyGreen.png";
 			case PAPER:
 				return "img/trashCanEmptyBlue.png";
@@ -46,6 +47,7 @@ public class TrashTypeGenerator {
 
 		switch (trashType) {
 			case GLASS:
+			case NONE:
 				return "img/trashGreen.png";
 			case PAPER:
 				return "img/trashBlue.png";
