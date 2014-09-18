@@ -159,7 +159,7 @@ public class Collector extends Agent {
 			return;
 		}
 		
-		if (hasTrash()) {
+		if (status != CollectorStatus.WALKINGTRASH && hasTrash()) {
 			status = CollectorStatus.LOOKINGTRASH;
 			return;
 		}
@@ -203,21 +203,28 @@ public class Collector extends Agent {
 	 * Act according to what was planned
 	 */
 	private Block act() {
-		if (currentBlock.equals(objective)) {
+		if (currentBlock.getPosition().equals(objective)) {
 			if (status == CollectorStatus.WALKINGTRASH) {
 				collectTrash();
 				return null;
 			}
 		}
 		
+		ArrayList<Position> positions = new ArrayList<Position>();
 		for (Block block : possibleBlocks) {
 			if (block.getPosition().equals(objective)) {
 				return block;
 			}
+			
+			positions.add(block.getPosition());
 		}
 		
-		// A*
-		
+		Position pos = Position.getPseudoNearest(currentBlock.getPosition(), positions);
+		for (Block block : possibleBlocks) {
+			if (block.getPosition().equals(pos)) {
+				return block;
+			}
+		}
 		
 		return null;
 	}
