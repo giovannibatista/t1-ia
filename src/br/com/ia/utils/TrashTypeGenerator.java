@@ -59,4 +59,10 @@ public class TrashTypeGenerator {
 		
 		return "";
 	}
+
+	public static void setIndex(Integer index) {
+		TrashTypeGenerator.index = index;
+	}
+	
+	
 }
