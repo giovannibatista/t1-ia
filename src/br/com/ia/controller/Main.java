@@ -108,7 +108,6 @@ public class Main {
 		if (matrix.hasAgent(position))
 			insertCollector(index);
 		
-		//TODO: Alterar capacidade da lixeira
 		Collector collector = new Collector("Coletor" + index, maxBatteryCapacity, maxTrashCapacity, matrix.getBlock(position));
 
 		matrix.add(position, collector);

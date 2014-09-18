@@ -219,7 +219,7 @@ public class Collector extends Agent {
 			positions.add(block.getPosition());
 		}
 		
-		Position pos = Position.getPseudoNearest(currentBlock.getPosition(), positions);
+		Position pos = Position.getPseudoNearest(objective, positions);
 		for (Block block : possibleBlocks) {
 			if (block.getPosition().equals(pos)) {
 				return block;
