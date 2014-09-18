@@ -9,7 +9,7 @@ import br.com.ia.utils.Way;
 
 public class Collector extends Agent {
 	private static String icon = "img/collector.png";
-	
+
 	/* KNOWLEDGE ABOUT THE WORLD */
 	private ArrayList<Position> glassTrashCans;
 	private ArrayList<Position> metalTrashCans;
@@ -18,96 +18,97 @@ public class Collector extends Agent {
 	private ArrayList<Position> rechargers;
 
 	private ArrayList<Block> neighbors;
-	
+
 	/* KNOWLEDGE ABOUT ITSELF */
 	private ArrayList<Trash> glassTrash;
 	private ArrayList<Trash> metalTrash;
 	private ArrayList<Trash> paperTrash;
 	private ArrayList<Trash> plasticTrash;
-	
+
 	private Block currentBlock;
-	
+
 	private int maxBatteryCapacity;
 	private int maxTrashCapacity;
-	
+
 	private int batteryCharge;
-	
+
 	private CollectorStatus status;
-	
+
 	private Way way;
 	private Direction direction;
-	
+
 	/* CONTROL VARIABLES */	
 	private Position objective;
 	private TrashType trashType;
 	private ArrayList<Block> possibleBlocks;
-	
+	private ArrayList<Block> excludedBlocks;
+
 	/* CONSTRUCTOR */
 	public Collector(String name, Integer batteryCapacity, Integer trashCapacity, Block current) {
 		super(name, icon);
 
 		// current position
 		this.currentBlock = current;
-		
+
 		// rechargers
 		rechargers = new ArrayList<Position>();
-		
+
 		// trash cans
 		glassTrashCans = new ArrayList<Position>();
 		metalTrashCans = new ArrayList<Position>();
 		paperTrashCans = new ArrayList<Position>();
 		plasticTrashCans = new ArrayList<Position>();
-		
+
 		// garbage
 		glassTrash = new ArrayList<Trash>();
 		metalTrash = new ArrayList<Trash>();
 		paperTrash = new ArrayList<Trash>();
 		plasticTrash = new ArrayList<Trash>();
-		
+
 		maxBatteryCapacity = batteryCapacity;
 		maxTrashCapacity = trashCapacity;
-		
+
 		batteryCharge = batteryCapacity;
-		
+
 		direction = Direction.NONE;
-		
+
 		status = CollectorStatus.WANDER;
 	}
-	
+
 	/* CONFIGURATION METHODS */
 	public boolean addTrashCan(TrashType trashType, int x, int y) {
 		Position pos = new Position(x, y);
 
 		switch (trashType) {
-			case GLASS:
-				if (glassTrashCans.contains(pos)) {
-					return false;
-				}
-				
-				glassTrashCans.add(pos);
-				break;
-			case METAL:
-				if (metalTrashCans.contains(pos)) {
-					return false;
-				}
-				
-				metalTrashCans.add(pos);
-				break;
-			case PAPER:
-				if (paperTrashCans.contains(pos)) {
-					return false;
-				}
-				
-				paperTrashCans.add(pos);
-				break;
-			case PLASTIC:
-				if (plasticTrashCans.contains(pos)) {
-					return false;
-				}
-				
-				plasticTrashCans.add(pos);
-			default:
-				break;
+		case GLASS:
+			if (glassTrashCans.contains(pos)) {
+				return false;
+			}
+
+			glassTrashCans.add(pos);
+			break;
+		case METAL:
+			if (metalTrashCans.contains(pos)) {
+				return false;
+			}
+
+			metalTrashCans.add(pos);
+			break;
+		case PAPER:
+			if (paperTrashCans.contains(pos)) {
+				return false;
+			}
+
+			paperTrashCans.add(pos);
+			break;
+		case PLASTIC:
+			if (plasticTrashCans.contains(pos)) {
+				return false;
+			}
+
+			plasticTrashCans.add(pos);
+		default:
+			break;
 		}
 
 		return true;
@@ -133,7 +134,7 @@ public class Collector extends Agent {
 			System.out.println("Sem espaço para andar. :(");
 			return null;
 		}
-		
+
 		if (batteryCharge <= 0) {
 			System.out.println("Acabou a bateria. :(");
 			return null;
@@ -141,18 +142,18 @@ public class Collector extends Agent {
 
 		this.neighbors = neighbors;
 		this.possibleBlocks = getPossibleBlocks();
-		
+
 		observe();
 
 		plan();
 
 		Block moveTo = act();
-		
+
 		batteryCharge--;
-		
+
 		return moveTo;
 	}
-	
+
 	/**
 	 * Observe its state and prepare to plan the next move.
 	 */
@@ -163,62 +164,62 @@ public class Collector extends Agent {
 			status = CollectorStatus.LOOKINGRECHARGER;
 			return;
 		}
-		
+
 		if(status == CollectorStatus.WALKINGRECHARGER){
 			return;
 		}
-		
+
 		if (hasFullTrash()) {
 			status = CollectorStatus.LOOKINGTRASHCAN;
 			System.out.println("* Precisa esvaziar, procurar por lixeira");
 			return;
 		}
-		
+
 		if(status == CollectorStatus.WALKINGTRASHCAN){
 			return;
 		}
-		
+
 		if (status != CollectorStatus.WALKINGTRASH && hasTrash()) {
 			status = CollectorStatus.LOOKINGTRASH;
 			return;
 		}
 	}
-	
+
 	/**
 	 * Plans the next move.
 	 */
 	private void plan() {
 		switch (status) {
-			case LOOKINGRECHARGER:
-				objective = Position.getPseudoNearest(currentBlock.getPosition(), rechargers);
-				status = CollectorStatus.WALKINGRECHARGER;
-				System.out.println("* Definiu ir para o carregador em " + objective.toString());
-				break;
-			case WALKINGRECHARGER:
-				System.out.println("* Indo para o carregador em " + objective.toString());
-				break;
-			case LOOKINGTRASHCAN:
-				objective = getNearestTrashCan();
-				status = CollectorStatus.WALKINGTRASHCAN;
-				System.out.println("* Definiu ir para lixeira em " + objective.toString());
-				break;
-			case WALKINGTRASHCAN:
-				
-				break;
-			case LOOKINGTRASH:
-				objective = Position.getPseudoNearest(currentBlock.getPosition(), getTrashFound());
-				status = CollectorStatus.WALKINGTRASH;
-				System.out.println("* Achou lixo em " + objective.toString());
-				break;
-			case WALKINGTRASH:
-				
-				break;
-			case WANDER:
-			default:
-				objective = wander().getPosition();
-				status = CollectorStatus.WANDER;
-				System.out.println("* Nada encontrado, então caminhar");
-				break;
+		case LOOKINGRECHARGER:
+			objective = Position.getPseudoNearest(currentBlock.getPosition(), rechargers);
+			status = CollectorStatus.WALKINGRECHARGER;
+			System.out.println("* Definiu ir para o carregador em " + objective.toString());
+			break;
+		case WALKINGRECHARGER:
+			System.out.println("* Indo para o carregador em " + objective.toString());
+			break;
+		case LOOKINGTRASHCAN:
+			objective = getNearestTrashCan();
+			status = CollectorStatus.WALKINGTRASHCAN;
+			System.out.println("* Definiu ir para lixeira em " + objective.toString());
+			break;
+		case WALKINGTRASHCAN:
+
+			break;
+		case LOOKINGTRASH:
+			objective = Position.getPseudoNearest(currentBlock.getPosition(), getTrashFound());
+			status = CollectorStatus.WALKINGTRASH;
+			System.out.println("* Achou lixo em " + objective.toString());
+			break;
+		case WALKINGTRASH:
+
+			break;
+		case WANDER:
+		default:
+			objective = wander().getPosition();
+			status = CollectorStatus.WANDER;
+			System.out.println("* Nada encontrado, então caminhar");
+			break;
 		}
 	}
 
@@ -232,30 +233,35 @@ public class Collector extends Agent {
 				return null;
 			}
 		}
+
+		if (status == CollectorStatus.WALKINGRECHARGER) {
+			for (Block block : excludedBlocks) {
+				if (block.getPosition().equals(objective)) {
+					recharge(block);
+					return null;
+				}
+			}
+		}
 		
 		ArrayList<Position> positions = new ArrayList<Position>();
 		for (Block block : possibleBlocks) {
 			if (block.getPosition().equals(objective)) {
-				if (status == CollectorStatus.WALKINGRECHARGER) {
-					recharge(block);
-					return null;
-				}
 				return block;
 			}
-			
+
 			positions.add(block.getPosition());
 		}
-		
+
 		Position pos = Position.getPseudoNearest(objective, positions);
 		for (Block block : possibleBlocks) {
 			if (block.getPosition().equals(pos)) {
 				return block;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	private void recharge(Block block) {
 		Recharger a = (Recharger) block.getAgent();
 	}
@@ -263,24 +269,24 @@ public class Collector extends Agent {
 	private void collectTrash() {
 		Trash trash = currentBlock.collectTrash();
 		switch (trash.getTrashType()) {
-			case GLASS:
-				glassTrash.add(trash);
-				break;
-			case METAL:
-				metalTrash.add(trash);
-				break;
-			case PAPER:
-				paperTrash.add(trash);
-				break;
-			case PLASTIC:
-				plasticTrash.add(trash);
-				break;
-			default:
-				break;
+		case GLASS:
+			glassTrash.add(trash);
+			break;
+		case METAL:
+			metalTrash.add(trash);
+			break;
+		case PAPER:
+			paperTrash.add(trash);
+			break;
+		case PLASTIC:
+			plasticTrash.add(trash);
+			break;
+		default:
+			break;
 		}
-		
+
 		System.out.println("* Pegou lixo " + trash.toString());
-		
+
 		status = CollectorStatus.WANDER;
 	}
 
@@ -289,105 +295,106 @@ public class Collector extends Agent {
 		if (possibleBlocks.size() == 0) {
 			return block;
 		}
-		
+
 		if (direction == Direction.NONE || direction == Direction.RIGHT) {
 			block = goRight();
 			if (block != null) return block;
-			
+
 			block = goDown();
 			if (block != null) return block;
-			
+
 			block = goLeft();
 			if (block != null) return block;
-			
+
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.DOWN) {
 			block = goLeft();
 			if (block != null) return block;
-			
+
 			block = goRight();
 			if (block != null) return block;
-			
+
 			block = goDown();
 			if (block != null) return block;
-			
+
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.LEFT) {
 			block = goLeft();
 			if (block != null) return block;
-			
+
 			block = goDown();
 			if (block != null) return block;
-			
+
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.UP) {
 			block = goRight();
 			if (block != null) return block;
-			
+
 			block = goLeft();
 			if (block != null) return block;
-			
+
 			block = goUp();
 			if (block != null) return block;
 		}
-		
-		
+
+
 		return block;
 	}
-	
+
 	private Block goRight() {
 		for (Block possibleBlock : possibleBlocks) {	
 			if (possibleBlock.getPosition().getX() == currentBlock.getPosition().getX()
-				&& possibleBlock.getPosition().getY() > currentBlock.getPosition().getY()) {
+					&& possibleBlock.getPosition().getY() > currentBlock.getPosition().getY()) {
 				direction = Direction.RIGHT;
 				return possibleBlock;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	private Block goDown() {
 		for (Block possibleBlock : possibleBlocks) {
 			if (possibleBlock.getPosition().getX() > currentBlock.getPosition().getX()
-				&& possibleBlock.getPosition().getY() == currentBlock.getPosition().getY()) {
+					&& possibleBlock.getPosition().getY() == currentBlock.getPosition().getY()) {
 				direction = Direction.DOWN;
 				return possibleBlock;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	private Block goLeft() {
 		for (Block possibleBlock : possibleBlocks) {
 			if (possibleBlock.getPosition().getX() == currentBlock.getPosition().getX()
-				&& possibleBlock.getPosition().getY() < currentBlock.getPosition().getY()) {
+					&& possibleBlock.getPosition().getY() < currentBlock.getPosition().getY()) {
 				direction = Direction.LEFT;
 				return possibleBlock;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	private Block goUp() {
 		for (Block possibleBlock : possibleBlocks) {
 			if (possibleBlock.getPosition().getX() < currentBlock.getPosition().getX()
-				&& possibleBlock.getPosition().getY() == currentBlock.getPosition().getY()) {
+					&& possibleBlock.getPosition().getY() == currentBlock.getPosition().getY()) {
 				direction = Direction.UP;
 				return possibleBlock;
 			}
 		}
-		
+
 		return null;
 	}
 
 	private ArrayList<Block> getPossibleBlocks() {
 		ArrayList<Block> possibleBlocks = new ArrayList<Block>();
+		excludedBlocks = new ArrayList<Block>();
 
 		for (Block block : neighbors) {
 			for (int x = -1; x <= 1; x++) {
@@ -400,13 +407,17 @@ public class Collector extends Agent {
 					int relY = (currentBlock.getPosition().getY() + y);
 
 					if (block.getPosition().getX() == relX
-						&& block.getPosition().getY() == relY) {
-						possibleBlocks.add(block);
+							&& block.getPosition().getY() == relY) {
+						if(block.hasAgent()){
+							excludedBlocks.add(block);
+						}else{
+							possibleBlocks.add(block);
+						}
 					}
 				}
 			}
 		}
-		
+
 		return possibleBlocks;
 	}
 
@@ -418,35 +429,35 @@ public class Collector extends Agent {
 				res = p;
 			}
 		}
-		
+
 		return maxBatteryCapacity <= ((int)res) + 5;
 	}
-	
+
 	private boolean hasFullTrash() {
-		
+
 		if (glassTrash.size() == maxTrashCapacity) {
 			trashType = TrashType.GLASS;
 			return true;
 		}
-		
+
 		if (metalTrash.size() == maxTrashCapacity) {
 			trashType = TrashType.METAL;
 			return true;
 		}
-		
+
 		if (paperTrash.size() == maxTrashCapacity) {
 			trashType = TrashType.PAPER;
 			return true;
 		}
-		
+
 		if (plasticTrash.size() == maxTrashCapacity) {
 			trashType = TrashType.PLASTIC;
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean hasTrash() {
 		for (Block block : neighbors) {
 			if (block.hasTrash()) {
@@ -456,55 +467,55 @@ public class Collector extends Agent {
 
 		return false;
 	}
-	
+
 	private ArrayList<Position> getTrashFound() {
 		ArrayList<Position> trashFound = new ArrayList<Position>();
-		
+
 		for (Block block : neighbors) {
 			if (block.hasTrash()) {
 				trashFound.add(block.getPosition());
 			}
 		}
-		
+
 		return trashFound;
 	}
-	
+
 	private Position getNearestTrashCan() {
 		switch (trashType) {
-			case GLASS:
-				return Position.getPseudoNearest(currentBlock.getPosition(), glassTrashCans);
-			case METAL:
-				return Position.getPseudoNearest(currentBlock.getPosition(), metalTrashCans);
-			case PAPER:
-				return Position.getPseudoNearest(currentBlock.getPosition(), paperTrashCans);
-			case PLASTIC:
-				return Position.getPseudoNearest(currentBlock.getPosition(), plasticTrashCans);
-			default:
-				// Oops. :(
-				break;
+		case GLASS:
+			return Position.getPseudoNearest(currentBlock.getPosition(), glassTrashCans);
+		case METAL:
+			return Position.getPseudoNearest(currentBlock.getPosition(), metalTrashCans);
+		case PAPER:
+			return Position.getPseudoNearest(currentBlock.getPosition(), paperTrashCans);
+		case PLASTIC:
+			return Position.getPseudoNearest(currentBlock.getPosition(), plasticTrashCans);
+		default:
+			// Oops. :(
+			break;
 		}
-		
+
 		return null;
 	}
-	
+
 	public Position getPosition() {
 		return currentBlock.getPosition();
 	}
-	
+
 	public void setBlock(Block block) {
 		this.currentBlock = block;
 	}
-	
+
 	public CollectorStatus getStatus() {
 		return status;
 	}
-	
+
 	public String toString() {
 		return "\n"
-			+ "Bateria: " + this.batteryCharge + "\n"
-			+ "Vidro: " + this.glassTrash.size() + "\n"
-			+ "Metal: " + this.metalTrash.size() + "\n"
-			+ "Papel: " + this.paperTrash.size() + "\n"
-			+ "Plástico: " + this.plasticTrash.size();
+				+ "Bateria: " + this.batteryCharge + "\n"
+				+ "Vidro: " + this.glassTrash.size() + "\n"
+				+ "Metal: " + this.metalTrash.size() + "\n"
+				+ "Papel: " + this.paperTrash.size() + "\n"
+				+ "Plástico: " + this.plasticTrash.size();
 	}
 }

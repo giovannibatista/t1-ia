@@ -117,9 +117,9 @@ public class Matrix {
 				}
 				
 				// occupied
-				if  (matrix[relX][relY].hasAgent()) {
+				/*if  (matrix[relX][relY].hasAgent()) {
 					continue;
-				} 
+				}*/ 
 				
 				// if it made this far, add :)
 				neighbors.add(matrix[relX][relY]);
