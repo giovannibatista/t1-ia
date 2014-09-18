@@ -2,7 +2,6 @@ var interval;
 function create(){
 	document.getElementById('nextBlockBtn').style.display='';
 	document.getElementById('nextBtn').style.display='';
-	document.getElementById('stopIntervalBtn').style.display='';
 	createMatrix();
 }
 function nextBlock(){
