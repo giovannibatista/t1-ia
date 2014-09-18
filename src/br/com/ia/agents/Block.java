@@ -45,6 +45,12 @@ public class Block {
 		return null;
 	}
 	
+	public Trash collectTrash() {
+		Trash t = this.trash;
+		this.trash = null;
+		return t;
+	}
+	
 	public String toString() {
 		return "(" + position.getX() + ", " + position.getY() + ")";
 	}	
@@ -56,19 +62,27 @@ public class Block {
 	public void setPosition(Position position) {
 		this.position = position;
 	}
-
+	
+	public boolean hasAgent() {
+		return (this.agent != null);
+	}
+	
 	public Agent getAgent() {
 		return agent;
 	}
-
+	
 	public void setAgent(Agent agent) {
 		this.agent = agent;
 	}
-
+	
+	public boolean hasTrash() {
+		return (this.trash != null);
+	}
+	
 	public Trash getTrash() {
 		return trash;
 	}
-
+	
 	public void setTrash(Trash trash) {
 		this.trash = trash;
 	}

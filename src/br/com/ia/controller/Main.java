@@ -75,7 +75,10 @@ public class Main {
 		for (Collector c : collectors) {
 			Block from = matrix.getBlock(c.getPosition());
 			Block to = c.run(matrix.getNeighbors(c.getPosition()));
-			matrix.move(c, from, to);
+			
+			if (to != null) {
+				matrix.move(c, from, to);
+			}
 		}
 		
 		RequestContext.getCurrentInstance().update("agents");
@@ -104,7 +107,7 @@ public class Main {
 			insertCollector(index);
 		
 		//TODO: Alterar capacidade da lixeira
-		Collector collector = new Collector("Coletor" + index, maxTrashCapacity, position);
+		Collector collector = new Collector("Coletor" + index, maxTrashCapacity, matrix.getBlock(position));
 
 		matrix.add(position, collector);
 		collectors.add(collector);

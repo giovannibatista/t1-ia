@@ -1,14 +1,11 @@
 package br.com.ia.agents;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import br.com.ia.utils.CollectorStatus;
 import br.com.ia.utils.Direction;
 import br.com.ia.utils.Position;
-import br.com.ia.utils.PositionTrashCan;
 import br.com.ia.utils.TrashType;
+import br.com.ia.utils.Way;
 
 public class Collector extends Agent {
 	private static String icon = "img/collector.png";
@@ -28,7 +25,7 @@ public class Collector extends Agent {
 	private ArrayList<Trash> paperTrash;
 	private ArrayList<Trash> plasticTrash;
 	
-	private Position currentPosition;
+	private Block currentBlock;
 	
 	private int maxBatteryCapacity;
 	private int maxTrashCapacity;
@@ -37,6 +34,7 @@ public class Collector extends Agent {
 	
 	private CollectorStatus status;
 	
+	private Way way;
 	private Direction direction;
 	
 	/* CONTROL VARIABLES */	
@@ -46,11 +44,11 @@ public class Collector extends Agent {
 	private ArrayList<Block> visitedBlocks;
 	
 	/* CONSTRUCTOR */
-	public Collector(String name, Integer capacity, Position position) {
+	public Collector(String name, Integer batteryCapacity, Integer trashCapacity, Block current) {
 		super(name, icon);
 
 		// current position
-		this.currentPosition = position;
+		this.currentBlock = current;
 		
 		// rechargers
 		rechargers = new ArrayList<Position>();
@@ -67,43 +65,16 @@ public class Collector extends Agent {
 		paperTrash = new ArrayList<Trash>();
 		plasticTrash = new ArrayList<Trash>();
 		
-		maxBatteryCapacity = capacity;
-		maxTrashCapacity = capacity;
+		maxBatteryCapacity = batteryCapacity;
+		maxTrashCapacity = trashCapacity;
 		
-		batteryCharge = capacity;
-		
-		direction = Direction.NONE;
-	}
-
-	public Collector(String name, Position position) {
-		super(name, icon);
-		
-		// current position
-		this.currentPosition = position;
-		
-		// rechargers
-		rechargers = new ArrayList<Position>();
-
-		// trash cans
-		glassTrashCans = new ArrayList<Position>();
-		metalTrashCans = new ArrayList<Position>();
-		paperTrashCans = new ArrayList<Position>();
-		plasticTrashCans = new ArrayList<Position>();
-		
-		glassTrash = new ArrayList<Trash>();
-		metalTrash = new ArrayList<Trash>();
-		paperTrash = new ArrayList<Trash>();
-		plasticTrash = new ArrayList<Trash>();
-		
-		int rnd = (int) Math.random() * 20;
-		maxBatteryCapacity = rnd;
-		maxTrashCapacity = rnd;
-		
-		batteryCharge = rnd;
+		batteryCharge = batteryCapacity;
 		
 		direction = Direction.NONE;
+		
+		status = CollectorStatus.WANDER;
 	}
-
+	
 	/* CONFIGURATION METHODS */
 	public boolean addTrashCan(TrashType trashType, int x, int y) {
 		Position pos = new Position(x, y);
@@ -185,9 +156,13 @@ public class Collector extends Agent {
 		
 		if (hasFullTrash()) {
 			status = CollectorStatus.LOOKINGTRASHCAN;
+			return;
 		}
 		
-		status = CollectorStatus.WANDER;
+		if (hasTrash()) {
+			status = CollectorStatus.LOOKINGTRASH;
+			return;
+		}
 	}
 	
 	/**
@@ -196,25 +171,30 @@ public class Collector extends Agent {
 	private void plan() {
 		switch (status) {
 			case LOOKINGRECHARGER:
-				objective = Position.getPseudoNearest(currentPosition, rechargers);
+				objective = Position.getPseudoNearest(currentBlock.getPosition(), rechargers);
+				status = CollectorStatus.WALKINGRECHARGER;
 				break;
 			case WALKINGRECHARGER:
 				
 				break;
 			case LOOKINGTRASHCAN:
 				objective = getNearestTrashCan();
+				status = CollectorStatus.WALKINGTRASHCAN;
 				break;
 			case WALKINGTRASHCAN:
 				
 				break;
 			case LOOKINGTRASH:
+				objective = Position.getPseudoNearest(currentBlock.getPosition(), getTrashFound());
+				status = CollectorStatus.WALKINGTRASH;
+				break;
+			case WALKINGTRASH:
 				
 				break;
 			case WANDER:
-				objective = wander().getPosition();
-				break;
 			default:
-				// Oops. :(
+				status = CollectorStatus.WANDER;
+				objective = wander().getPosition();
 				break;
 		}
 	}
@@ -223,6 +203,13 @@ public class Collector extends Agent {
 	 * Act according to what was planned
 	 */
 	private Block act() {
+		if (currentBlock.equals(objective)) {
+			if (status == CollectorStatus.WALKINGTRASH) {
+				collectTrash();
+				return null;
+			}
+		}
+		
 		for (Block block : possibleBlocks) {
 			if (block.getPosition().equals(objective)) {
 				return block;
@@ -231,7 +218,30 @@ public class Collector extends Agent {
 		
 		// A*
 		
+		
 		return null;
+	}
+	
+	private void collectTrash() {
+		Trash trash = currentBlock.collectTrash();
+		switch (trash.getTrashType()) {
+			case GLASS:
+				glassTrash.add(trash);
+				break;
+			case METAL:
+				metalTrash.add(trash);
+				break;
+			case PAPER:
+				paperTrash.add(trash);
+				break;
+			case PLASTIC:
+				plasticTrash.add(trash);
+				break;
+			default:
+				break;
+		}
+		
+		status = CollectorStatus.WANDER;
 	}
 
 	private Block wander() {
@@ -290,8 +300,8 @@ public class Collector extends Agent {
 	
 	private Block goRight() {
 		for (Block possibleBlock : possibleBlocks) {	
-			if (possibleBlock.getPosition().getX() == currentPosition.getX()
-				&& possibleBlock.getPosition().getY() > currentPosition.getY()) {
+			if (possibleBlock.getPosition().getX() == currentBlock.getPosition().getX()
+				&& possibleBlock.getPosition().getY() > currentBlock.getPosition().getY()) {
 				direction = Direction.RIGHT;
 				return possibleBlock;
 			}
@@ -302,8 +312,8 @@ public class Collector extends Agent {
 	
 	private Block goDown() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getX() > currentPosition.getX()
-				&& possibleBlock.getPosition().getY() == currentPosition.getY()) {
+			if (possibleBlock.getPosition().getX() > currentBlock.getPosition().getX()
+				&& possibleBlock.getPosition().getY() == currentBlock.getPosition().getY()) {
 				direction = Direction.DOWN;
 				return possibleBlock;
 			}
@@ -314,8 +324,8 @@ public class Collector extends Agent {
 	
 	private Block goLeft() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getX() == currentPosition.getX()
-				&& possibleBlock.getPosition().getY() < currentPosition.getY()) {
+			if (possibleBlock.getPosition().getX() == currentBlock.getPosition().getX()
+				&& possibleBlock.getPosition().getY() < currentBlock.getPosition().getY()) {
 				direction = Direction.LEFT;
 				return possibleBlock;
 			}
@@ -326,8 +336,8 @@ public class Collector extends Agent {
 	
 	private Block goUp() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getX() < currentPosition.getX()
-				&& possibleBlock.getPosition().getY() == currentPosition.getY()) {
+			if (possibleBlock.getPosition().getX() < currentBlock.getPosition().getX()
+				&& possibleBlock.getPosition().getY() == currentBlock.getPosition().getY()) {
 				direction = Direction.UP;
 				return possibleBlock;
 			}
@@ -346,8 +356,8 @@ public class Collector extends Agent {
 						continue;
 					}
 
-					int relX = (currentPosition.getX() + x);
-					int relY = (currentPosition.getY() + y);
+					int relX = (currentBlock.getPosition().getX() + x);
+					int relY = (currentBlock.getPosition().getY() + y);
 
 					if (block.getPosition().getX() == relX
 						&& block.getPosition().getY() == relY) {
@@ -363,7 +373,7 @@ public class Collector extends Agent {
 	private boolean batteryLow() {
 		double res = Double.MAX_VALUE;
 		for (Position position : rechargers) {
-			double p = Position.getDiference(currentPosition, position);
+			double p = Position.getDiference(currentBlock.getPosition(), position);
 			if (res < p) {
 				res = p;
 			}
@@ -397,16 +407,38 @@ public class Collector extends Agent {
 		return false;
 	}
 	
+	private boolean hasTrash() {
+		for (Block block : neighbors) {
+			if (block.hasTrash()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	private ArrayList<Position> getTrashFound() {
+		ArrayList<Position> trashFound = new ArrayList<Position>();
+		
+		for (Block block : neighbors) {
+			if (block.hasTrash()) {
+				trashFound.add(block.getPosition());
+			}
+		}
+		
+		return trashFound;
+	}
+	
 	private Position getNearestTrashCan() {
 		switch (trashType) {
 			case GLASS:
-				return Position.getPseudoNearest(currentPosition, glassTrashCans);
+				return Position.getPseudoNearest(currentBlock.getPosition(), glassTrashCans);
 			case METAL:
-				return Position.getPseudoNearest(currentPosition, metalTrashCans);
+				return Position.getPseudoNearest(currentBlock.getPosition(), metalTrashCans);
 			case PAPER:
-				return Position.getPseudoNearest(currentPosition, paperTrashCans);
+				return Position.getPseudoNearest(currentBlock.getPosition(), paperTrashCans);
 			case PLASTIC:
-				return Position.getPseudoNearest(currentPosition, plasticTrashCans);
+				return Position.getPseudoNearest(currentBlock.getPosition(), plasticTrashCans);
 			default:
 				// Oops. :(
 				break;
@@ -416,11 +448,11 @@ public class Collector extends Agent {
 	}
 	
 	public Position getPosition() {
-		return currentPosition;
+		return currentBlock.getPosition();
 	}
 	
-	public void setPosition(Position position) {
-		this.currentPosition = position;
+	public void setBlock(Block block) {
+		this.currentBlock = block;
 	}
 	
 	public CollectorStatus getStatus() {

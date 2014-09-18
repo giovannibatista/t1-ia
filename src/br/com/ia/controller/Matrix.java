@@ -76,7 +76,7 @@ public class Matrix {
 	public void move(Collector collector, Block from, Block to) {
 		matrix[from.getPosition().getX()][from.getPosition().getY()].setAgent(null);
 		matrix[to.getPosition().getX()][to.getPosition().getY()].setAgent(collector);
-		collector.setPosition(to.getPosition());
+		collector.setBlock(to);
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class Matrix {
 				}
 				
 				// occupied
-				if  (matrix[relX][relY].getAgent() != null) {
+				if  (matrix[relX][relY].hasAgent()) {
 					continue;
 				} 
 				
@@ -130,13 +130,11 @@ public class Matrix {
 	}
 
 	public boolean hasAgent(Position position) {
-		Block block = matrix[position.getX()][position.getY()];
-		return (block.getAgent() != null);
+		return matrix[position.getX()][position.getY()].hasAgent();
 	}
 	
 	public boolean hasTrash(Position position) {
-		Block block = matrix[position.getX()][position.getY()];
-		return (block.getTrash() != null);
+		return matrix[position.getX()][position.getY()].hasTrash();
 	}
 	
 	/* GETTERS AND SETTERS */
