@@ -1,25 +1,26 @@
 package br.com.ia.agents;
 
-import br.com.ia.utils.Position;
 import br.com.ia.utils.TrashType;
 
-public class Trash extends Block {
+public class Trash {
+	private String icon;
+	
+	private TrashType trashType;
 
-	private String name;
-
-	public Trash(String icon, TrashType trashType, Position position) {
-		super(icon, position);
+	public Trash(TrashType trashType, String icon) {
+		this.trashType = trashType;
+		this.icon = icon;
 	}
-
-	public String getName() {
-		return name;
+	
+	public String getIcon() {
+		return icon;
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	
+	public TrashType getTrashType() {
+		return trashType;
 	}
-
+	
 	public String toString() {
-		return name;
+		return trashType.toString();
 	}
 }

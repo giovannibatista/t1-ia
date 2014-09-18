@@ -1,24 +1,22 @@
 package br.com.ia.agents;
 
-import br.com.ia.utils.Position;
-
-public abstract class Agent extends Block {
+public abstract class Agent {
 	private String name;
+	private String icon;
 
-	public Agent(String name, String icon, Integer x, Integer y) {
-		super(icon, x, y);
+	public Agent(String icon) {
+		this.icon = icon;
+	}
+	
+	public Agent(String name, String icon) {
 		this.name = name;
+		this.icon = icon;
 	}
-
-	public Agent(String name, String icon, Position position) {
-		super(icon, position);
-		this.name = name;
+	
+	public String getIcon() {
+		return icon;
 	}
-
-	public Agent(String icon, Position position) {
-		super(icon, position);
-	}
-
+	
 	public String getName() {
 		return name;
 	}

@@ -11,7 +11,6 @@ import br.com.ia.utils.PositionTrashCan;
 import br.com.ia.utils.TrashType;
 
 public class Collector extends Agent {
-
 	private static String icon = "img/collector.png";
 	
 	/* KNOWLEDGE ABOUT THE WORLD */
@@ -28,6 +27,8 @@ public class Collector extends Agent {
 	private ArrayList<Trash> metalTrash;
 	private ArrayList<Trash> paperTrash;
 	private ArrayList<Trash> plasticTrash;
+	
+	private Position currentPosition;
 	
 	private int maxBatteryCapacity;
 	private int maxTrashCapacity;
@@ -46,8 +47,11 @@ public class Collector extends Agent {
 	
 	/* CONSTRUCTOR */
 	public Collector(String name, Integer capacity, Position position) {
-		super(name, icon, position);
+		super(name, icon);
 
+		// current position
+		this.currentPosition = position;
+		
 		// rechargers
 		rechargers = new ArrayList<Position>();
 		
@@ -72,7 +76,10 @@ public class Collector extends Agent {
 	}
 
 	public Collector(String name, Position position) {
-		super(name, icon, position);
+		super(name, icon);
+		
+		// current position
+		this.currentPosition = position;
 		
 		// rechargers
 		rechargers = new ArrayList<Position>();
@@ -189,7 +196,7 @@ public class Collector extends Agent {
 	private void plan() {
 		switch (status) {
 			case LOOKINGRECHARGER:
-				objective = Position.getPseudoNearest(this.getPosition(), rechargers);
+				objective = Position.getPseudoNearest(currentPosition, rechargers);
 				break;
 			case WALKINGRECHARGER:
 				
@@ -283,8 +290,8 @@ public class Collector extends Agent {
 	
 	private Block goRight() {
 		for (Block possibleBlock : possibleBlocks) {	
-			if (possibleBlock.getPosition().getX() == getPosition().getX()
-				&& possibleBlock.getPosition().getY() > getPosition().getY()) {
+			if (possibleBlock.getPosition().getX() == currentPosition.getX()
+				&& possibleBlock.getPosition().getY() > currentPosition.getY()) {
 				direction = Direction.RIGHT;
 				return possibleBlock;
 			}
@@ -295,8 +302,8 @@ public class Collector extends Agent {
 	
 	private Block goDown() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getX() > getPosition().getX()
-				&& possibleBlock.getPosition().getY() == getPosition().getY()) {
+			if (possibleBlock.getPosition().getX() > currentPosition.getX()
+				&& possibleBlock.getPosition().getY() == currentPosition.getY()) {
 				direction = Direction.DOWN;
 				return possibleBlock;
 			}
@@ -307,8 +314,8 @@ public class Collector extends Agent {
 	
 	private Block goLeft() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getX() == getPosition().getX()
-				&& possibleBlock.getPosition().getY() < getPosition().getY()) {
+			if (possibleBlock.getPosition().getX() == currentPosition.getX()
+				&& possibleBlock.getPosition().getY() < currentPosition.getY()) {
 				direction = Direction.LEFT;
 				return possibleBlock;
 			}
@@ -319,8 +326,8 @@ public class Collector extends Agent {
 	
 	private Block goUp() {
 		for (Block possibleBlock : possibleBlocks) {
-			if (possibleBlock.getPosition().getX() < getPosition().getX()
-				&& possibleBlock.getPosition().getY() == getPosition().getY()) {
+			if (possibleBlock.getPosition().getX() < currentPosition.getX()
+				&& possibleBlock.getPosition().getY() == currentPosition.getY()) {
 				direction = Direction.UP;
 				return possibleBlock;
 			}
@@ -339,8 +346,8 @@ public class Collector extends Agent {
 						continue;
 					}
 
-					int relX = (getPosition().getX() + x);
-					int relY = (getPosition().getY() + y);
+					int relX = (currentPosition.getX() + x);
+					int relY = (currentPosition.getY() + y);
 
 					if (block.getPosition().getX() == relX
 						&& block.getPosition().getY() == relY) {
@@ -356,7 +363,7 @@ public class Collector extends Agent {
 	private boolean batteryLow() {
 		double res = Double.MAX_VALUE;
 		for (Position position : rechargers) {
-			double p = Position.getDiference(this.getPosition(), position);
+			double p = Position.getDiference(currentPosition, position);
 			if (res < p) {
 				res = p;
 			}
@@ -393,13 +400,13 @@ public class Collector extends Agent {
 	private Position getNearestTrashCan() {
 		switch (trashType) {
 			case GLASS:
-				return Position.getPseudoNearest(this.getPosition(), glassTrashCans);
+				return Position.getPseudoNearest(currentPosition, glassTrashCans);
 			case METAL:
-				return Position.getPseudoNearest(this.getPosition(), metalTrashCans);
+				return Position.getPseudoNearest(currentPosition, metalTrashCans);
 			case PAPER:
-				return Position.getPseudoNearest(this.getPosition(), paperTrashCans);
+				return Position.getPseudoNearest(currentPosition, paperTrashCans);
 			case PLASTIC:
-				return Position.getPseudoNearest(this.getPosition(), plasticTrashCans);
+				return Position.getPseudoNearest(currentPosition, plasticTrashCans);
 			default:
 				// Oops. :(
 				break;
@@ -408,8 +415,13 @@ public class Collector extends Agent {
 		return null;
 	}
 	
-
+	public Position getPosition() {
+		return currentPosition;
+	}
 	
+	public void setPosition(Position position) {
+		this.currentPosition = position;
+	}
 	
 	public CollectorStatus getStatus() {
 		return status;

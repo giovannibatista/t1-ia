@@ -59,27 +59,33 @@ public class Matrix {
 		}
 	}
 	
-	public void add(Block b) {
-		if (b == null)
+	public void add(Position position, Agent agent) {
+		if (agent == null)
 			return;
 		
-		if (b instanceof Collector) {
-			collectors.add((Collector) b);
-		} else if (b instanceof TrashCan) {
-			trashCans.add((TrashCan) b);
-		} else if (b instanceof Recharger) {
-			rechargers.add((Recharger) b);
-		}
-		
-		matrix[b.getPosition().getX()][b.getPosition().getY()] = b;
+		matrix[position.getX()][position.getY()].setAgent(agent);
 	}
 	
-	public void move(Block from, Block to) {
+	public void add(Position position, Trash trash) {
+		if (trash == null)
+			return;
 		
-		matrix[from.getPosition().getX()][from.getPosition().getY()] = new Block(from.getPosition());
-		from.setPosition(to.getPosition());
-		matrix[from.getPosition().getX()][from.getPosition().getY()] = from;
-		
+		matrix[position.getX()][position.getY()].setTrash(trash);
+	}
+	
+	public void move(Collector collector, Block from, Block to) {
+		matrix[from.getPosition().getX()][from.getPosition().getY()].setAgent(null);
+		matrix[to.getPosition().getX()][to.getPosition().getY()].setAgent(collector);
+		collector.setPosition(to.getPosition());
+	}
+	
+	/**
+	 * Get block of a specific position
+	 * @param pos
+	 * @return block
+	 */
+	public Block getBlock(Position pos) {
+		return matrix[pos.getX()][pos.getY()];
 	}
 	
 	/**
@@ -111,7 +117,7 @@ public class Matrix {
 				}
 				
 				// occupied
-				if  (matrix[relX][relY] instanceof Agent) {
+				if  (matrix[relX][relY].getAgent() != null) {
 					continue;
 				} 
 				
@@ -123,22 +129,17 @@ public class Matrix {
 		return neighbors;
 	}
 
-	public boolean hasElement(Position position) {
+	public boolean hasAgent(Position position) {
 		Block block = matrix[position.getX()][position.getY()];
-		return (block instanceof Agent
-			|| block instanceof Trash
-			|| block instanceof TrashCan
-			|| block instanceof Recharger);
+		return (block.getAgent() != null);
 	}
-
 	
+	public boolean hasTrash(Position position) {
+		Block block = matrix[position.getX()][position.getY()];
+		return (block.getTrash() != null);
+	}
 	
-	
-	
-	
-	
-	
-	
+	/* GETTERS AND SETTERS */
 	public Block[][] getMatrix() {
 		return matrix;
 	}

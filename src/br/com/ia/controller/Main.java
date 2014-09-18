@@ -65,8 +65,9 @@ public class Main {
 
 	public void next() {
 		for (Collector c : collectors) {
-			Block b = c.run(matrix.getNeighbors(c.getPosition()));
-			matrix.move(c, b);
+			Block from = matrix.getBlock(c.getPosition());
+			Block to = c.run(matrix.getNeighbors(c.getPosition()));
+			matrix.move(c, from, to);
 		}
 		
 		RequestContext.getCurrentInstance().update("agents");
@@ -82,7 +83,7 @@ public class Main {
 		}
 
 		for (int i = 0; i < amountRechargers; i++) {
-			insertRecharges();
+			insertRechargers();
 		}
 	
 		insertTrashes();
@@ -91,46 +92,47 @@ public class Main {
 	private void insertCollector(Integer index) {
 		Position position = Position.getRandomPosition(matrix.getSize());
 
-		if (matrix.hasElement(position))
+		if (matrix.hasAgent(position))
 			insertCollector(index);
+		
 		//TODO: Alterar capacidade da lixeira
-		Collector collector = new Collector("Coletor" + index,10, position);
+		Collector collector = new Collector("Coletor" + index, 10, position);
 
-		matrix.add(collector);
+		matrix.add(position, collector);
 		collectors.add(collector);
 	}
 	
 	private void insertTrashCan() {
 		Position position = Position.getRandomPosition(matrix.getSize());
 
-		if (matrix.hasElement(position))
+		if (matrix.hasAgent(position))
 			insertTrashCan();
 
 		TrashType trashCanType = TrashTypeGenerator.next();
 		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
-		TrashCan trashCan = new TrashCan("Lixeira", img, 10, trashCanType, position);
+		TrashCan trashCan = new TrashCan("Lixeira", img, 10, trashCanType);
 
-		matrix.add(trashCan);
+		matrix.add(position, trashCan);
 		trashCans.add(trashCan);
 
 		for (Collector collector : collectors) {
-			collector.addTrashCan(trashCan.getColor(), trashCan.getPosition().getX(), trashCan.getPosition().getY());
+			collector.addTrashCan(trashCan.getColor(), position.getX(), position.getY());
 		}
 	}
 
-	private void insertRecharges() {
+	private void insertRechargers() {
 		Position position = Position.getRandomPosition(matrix.getSize());
 
-		if (matrix.hasElement(position))
-			insertRecharges();
+		if (matrix.hasAgent(position))
+			insertRechargers();
 
-		Recharger recharger = new Recharger(position);
+		Recharger recharger = new Recharger();
 
-		matrix.add(recharger);
+		matrix.add(position, recharger);
 		rechargers.add(recharger);
 
 		for (Collector collector : collectors) {
-			collector.addRecharger(recharger.getPosition().getX(), recharger.getPosition().getY());
+			collector.addRecharger(position.getX(), position.getY());
 		}
 	}
 	
@@ -144,11 +146,11 @@ public class Main {
 		for (int i = 0; i < amountTrashes; i++) {
 			Position position = Position.getRandomPosition(matrix.getSize());
 
-			if (!matrix.hasElement(position)) {
+			if (!matrix.hasAgent(position)) {
 				TrashType trashType = TrashTypeGenerator.getRandomTrashType();
 				String img = TrashTypeGenerator.getTrashIcon(trashType);
-				Trash trash = new Trash(img, trashType, position);
-				matrix.add(trash);
+				Trash trash = new Trash(trashType, img);
+				matrix.add(position, trash);
 			}
 		}
 	}
@@ -159,7 +161,7 @@ public class Main {
 		rechargers = new ArrayList<Recharger>();
 	}
 	
-	
+	/* GETTERS AND SETTERS */
 	public Matrix getMatrix() {
 		return matrix;
 	}
