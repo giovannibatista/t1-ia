@@ -15,8 +15,8 @@ function createMatrixTestMoving(){
 }
 
 function nextBlock(){
+	var interval = document.getElementById('form:interval');
 	setInterval(function(){
-		var interval = document.getElementById('form:interval');
 		console.info('Chamando next...');
 		next();
 	}, interval.value);

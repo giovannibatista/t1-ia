@@ -58,6 +58,8 @@ public class Main {
 		amountCollectors = 1;
 		amountTrashCans = 0;
 		amountRechargers = 0;
+		maxTrashCanCapacity = 5;
+		maxTrashCapacity = 3;
 		initArrayList();
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
 		matrix.createMatrix();
@@ -102,7 +104,7 @@ public class Main {
 			insertCollector(index);
 		
 		//TODO: Alterar capacidade da lixeira
-		Collector collector = new Collector("Coletor" + index, 10, position);
+		Collector collector = new Collector("Coletor" + index, maxTrashCapacity, position);
 
 		matrix.add(position, collector);
 		collectors.add(collector);
@@ -116,7 +118,7 @@ public class Main {
 
 		TrashType trashCanType = TrashTypeGenerator.next();
 		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
-		TrashCan trashCan = new TrashCan("Lixeira", img, 10, trashCanType);
+		TrashCan trashCan = new TrashCan("Lixeira", img, maxTrashCanCapacity, trashCanType);
 
 		matrix.add(position, trashCan);
 		trashCans.add(trashCan);
