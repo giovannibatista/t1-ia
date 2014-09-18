@@ -1,24 +1,25 @@
-function hideButton(button){
-	/*button.style.display='none';
-	document.getElementById('next').style.display='';
-	document.getElementById('insertTrashCan').style.display='';
-	document.getElementById('insertRecharges').style.display='';*/
+var interval;
+function create(){
+	document.getElementById('nextBlockBtn').style.display='';
+	document.getElementById('nextBtn').style.display='';
+	document.getElementById('stopIntervalBtn').style.display='';
+	createMatrix();
 }
-
-function createMatrix(){
-	console.info('Chamando createMatix...');
-	createMatix();
-}
-
-function createMatrixTestMoving(){
-	createMatrixTestMoving();
-}
-
 function nextBlock(){
-	var interval = document.getElementById('form:interval');
-	setInterval(function(){
+	var intervalParameter = document.getElementById('form:interval');
+	document.getElementById('nextBlockBtn').style.display='none';
+	document.getElementById('nextBtn').style.display='none';
+	document.getElementById('stopIntervalBtn').style.display='';
+	interval = setInterval(function(){
 		console.info('Chamando next...');
 		next();
-	}, interval.value);
+	}, intervalParameter.value);
 
+}
+
+function stopInterval(){
+	document.getElementById('nextBlockBtn').style.display='';
+	document.getElementById('nextBtn').style.display='';
+	document.getElementById('stopIntervalBtn').style.display='none';
+	clearInterval(interval);
 }

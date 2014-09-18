@@ -14,8 +14,8 @@
 </h:head>
 <h:body>
 
-	<h:form id="form">
-		<p:panel header="Coleta Seletiva de Lixo">
+	<p:panel header="Coleta Seletiva de Lixo">
+		<h:form id="form">
 			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
 					<p:outputLabel for="amountCollectors"
@@ -30,13 +30,15 @@
 					<p:inputText id="amountRechargers" value="#{main.amountRechargers}" />
 
 				</h:panelGrid>
-				
+
 				<h:panelGrid columns="2">
 					<p:outputLabel for="amountCollectors"
 						value="Capacidade das lixeiras" />
-					<p:inputText id="maxTrashCanCapacity" value="#{main.maxTrashCanCapacity}" />
+					<p:inputText id="maxTrashCanCapacity"
+						value="#{main.maxTrashCanCapacity}" />
 
-					<p:outputLabel for="maxTrashCapacity" value="Capacidade de lixos nos coletores" />
+					<p:outputLabel for="maxTrashCapacity"
+						value="Capacidade de lixos nos coletores" />
 					<p:inputText id="maxTrashCapacity" value="#{main.maxTrashCapacity}" />
 
 					<p:outputLabel for="interval"
@@ -44,7 +46,7 @@
 					<p:inputText id="interval" value="1000" />
 
 				</h:panelGrid>
-				
+
 
 			</h:panelGrid>
 
@@ -53,25 +55,24 @@
 			<p:remoteCommand name="createMatrix"
 				actionListener="#{main.createMatrix}" update="@form :tableAgents" />
 
-			<p:remoteCommand name="createMatrixTestMoving"
-				actionListener="#{main.createMatrixTestMoving}"
-				update="@form :tableAgents" />
-
 			<p:remoteCommand name="next" actionListener="#{main.next}"
 				update="@form :tableAgents" />
 
-			<input type="button" onclick="createMatrix();" value="Gerar matriz" />
+		</h:form>
+		<input type="button" id="createBtn" onclick="create();"
+			value="Gerar matriz" />
 
-			<input type="button" onclick="createMatrixTestMoving();"
-				value="Gerar matriz para teste" />
+		<input type="button" id="nextBlockBtn" onclick="nextBlock();"
+			style="display: none;" value="Executar" />
 
-			<input type="button" onclick="nextBlock();" value="Mover..." />
-			
-			<input type="button" onclick="next();" value="Próximo passo..." />
+		<input type="button" id="stopIntervalBtn" onclick="stopInterval();"
+			style="display: none;" value="Parar" />
+
+		<input type="button" id="nextBtn" onclick="next();"
+			style="display: none;" value="Próximo passo..." />
 
 
-		</p:panel>
-	</h:form>
+	</p:panel>
 	<h:form id="tableAgents">
 		<table id="agents">
 			<ui:repeat value="#{main.matrix.matrix}" var="firstLevel">
