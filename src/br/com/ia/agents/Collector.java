@@ -165,7 +165,7 @@ public class Collector extends Agent {
 			return;
 		}
 
-		if(status == CollectorStatus.WALKINGRECHARGER){
+		if(status == CollectorStatus.WALKINGRECHARGER || status == CollectorStatus.RECHARGING){
 			return;
 		}
 
@@ -214,6 +214,9 @@ public class Collector extends Agent {
 		case WALKINGTRASH:
 
 			break;
+		case RECHARGING:
+			System.out.println("Recarregando...");
+			break;
 		case WANDER:
 		default:
 			objective = wander().getPosition();
@@ -234,7 +237,7 @@ public class Collector extends Agent {
 			}
 		}
 
-		if (status == CollectorStatus.WALKINGRECHARGER) {
+		if (status == CollectorStatus.WALKINGRECHARGER || status == CollectorStatus.RECHARGING) {
 			for (Block block : excludedBlocks) {
 				if (block.getPosition().equals(objective)) {
 					recharge(block);
@@ -263,7 +266,23 @@ public class Collector extends Agent {
 	}
 
 	private void recharge(Block block) {
-		Recharger a = (Recharger) block.getAgent();
+		Recharger recharger = (Recharger) block.getAgent();
+		if(recharger.isBusy()){
+			System.out.println("O carregador está ocupado :(.");
+			return;
+		}
+		
+		recharger.addCollector(this);
+		
+		if(maxBatteryCapacity == batteryCharge){
+			batteryCharge+=2;
+			status = CollectorStatus.RECHARGING;
+			System.out.println("Bateria: " + batteryCharge + ">>" + maxBatteryCapacity);
+		}else{
+			status = CollectorStatus.WANDER;
+			recharger.removeCollector(this);
+		}
+		
 	}
 
 	private void collectTrash() {
