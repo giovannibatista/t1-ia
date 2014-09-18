@@ -15,10 +15,10 @@ function createMatrixTestMoving(){
 }
 
 function nextBlock(){
-	console.info('Chamando next...');
 	setInterval(function(){
+		var interval = document.getElementById('form:interval');
 		console.info('Chamando next...');
 		next();
-	}, 1000);
+	}, interval.value);
 
 }

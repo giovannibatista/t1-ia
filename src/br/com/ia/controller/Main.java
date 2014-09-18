@@ -24,7 +24,11 @@ public class Main {
 	private Integer amountCollectors;
 	private Integer amountTrashCans;
 	private Integer amountRechargers;
-
+	
+	private Integer maxTrashCanCapacity;
+	private Integer maxTrashCapacity;
+	
+	
 	private Matrix matrix;
 	private ArrayList<Collector> collectors;
 	private ArrayList<TrashCan> trashCans;
@@ -36,6 +40,8 @@ public class Main {
 		amountCollectors = 1;
 		amountTrashCans = 4;
 		amountRechargers = 1;
+		maxTrashCanCapacity = 5;
+		maxTrashCapacity = 3;
 		initArrayList();
 	}
 
@@ -193,4 +199,21 @@ public class Main {
 	public void setAmountRechargers(Integer amountRechargers) {
 		this.amountRechargers = amountRechargers;
 	}
+
+	public Integer getMaxTrashCanCapacity() {
+		return maxTrashCanCapacity;
+	}
+
+	public void setMaxTrashCanCapacity(Integer maxTrashCanCapacity) {
+		this.maxTrashCanCapacity = maxTrashCanCapacity;
+	}
+
+	public Integer getMaxTrashCapacity() {
+		return maxTrashCapacity;
+	}
+
+	public void setMaxTrashCapacity(Integer maxTrashCapacity) {
+		this.maxTrashCapacity = maxTrashCapacity;
+	}
+	
 }

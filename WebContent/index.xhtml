@@ -30,6 +30,21 @@
 					<p:inputText id="amountRechargers" value="#{main.amountRechargers}" />
 
 				</h:panelGrid>
+				
+				<h:panelGrid columns="2">
+					<p:outputLabel for="amountCollectors"
+						value="Capacidade das lixeiras" />
+					<p:inputText id="maxTrashCanCapacity" value="#{main.maxTrashCanCapacity}" />
+
+					<p:outputLabel for="maxTrashCapacity" value="Capacidade de lixos nos coletores" />
+					<p:inputText id="maxTrashCapacity" value="#{main.maxTrashCapacity}" />
+
+					<p:outputLabel for="interval"
+						value="Intervalo de tempo(Milissegundos)" />
+					<p:inputText id="interval" value="1000" />
+
+				</h:panelGrid>
+				
 
 			</h:panelGrid>
 
@@ -51,6 +66,8 @@
 				value="Gerar matriz para teste" />
 
 			<input type="button" onclick="nextBlock();" value="Mover..." />
+			
+			<input type="button" onclick="next();" value="Próximo passo..." />
 
 
 		</p:panel>
