@@ -149,7 +149,8 @@ public class Collector extends Agent {
 
 		Block moveTo = act();
 
-		batteryCharge--;
+		if(moveTo != null)
+			batteryCharge--;
 
 		return moveTo;
 	}
@@ -245,7 +246,7 @@ public class Collector extends Agent {
 				}
 			}
 		}
-		
+
 		ArrayList<Position> positions = new ArrayList<Position>();
 		for (Block block : possibleBlocks) {
 			if (block.getPosition().equals(objective)) {
@@ -271,18 +272,20 @@ public class Collector extends Agent {
 			System.out.println("O carregador está ocupado :(.");
 			return;
 		}
-		
-		recharger.addCollector(this);
-		
-		if(maxBatteryCapacity == batteryCharge){
-			batteryCharge+=2;
+
+		if(status != CollectorStatus.RECHARGING){
+			recharger.addCollector(this);
+		}
+
+		if(maxBatteryCapacity > batteryCharge){
+			batteryCharge++;
 			status = CollectorStatus.RECHARGING;
 			System.out.println("Bateria: " + batteryCharge + ">>" + maxBatteryCapacity);
 		}else{
 			status = CollectorStatus.WANDER;
 			recharger.removeCollector(this);
 		}
-		
+
 	}
 
 	private void collectTrash() {
