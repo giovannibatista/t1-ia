@@ -556,7 +556,7 @@ public class Collector extends Agent {
 			}
 		}
 
-		return maxBatteryCapacity <= ((int)res) + 5;
+		return batteryCharge <= ((int)res) + 5;
 	}
 
 	private boolean hasFullTrash() {
