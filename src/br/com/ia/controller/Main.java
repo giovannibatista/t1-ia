@@ -27,7 +27,7 @@ public class Main {
 	
 	private Integer maxTrashCanCapacity;
 	private Integer maxTrashCapacity;
-	
+	private Integer maxBatteryCapacity;
 	
 	private Matrix matrix;
 	private ArrayList<Collector> collectors;
@@ -42,6 +42,7 @@ public class Main {
 		amountRechargers = 1;
 		maxTrashCanCapacity = 5;
 		maxTrashCapacity = 3;
+		maxBatteryCapacity = 10;
 		initArrayList();
 	}
 
@@ -60,6 +61,7 @@ public class Main {
 		amountRechargers = 0;
 		maxTrashCanCapacity = 5;
 		maxTrashCapacity = 3;
+		maxBatteryCapacity = 10;
 		initArrayList();
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
 		matrix.createMatrix();
@@ -107,7 +109,7 @@ public class Main {
 			insertCollector(index);
 		
 		//TODO: Alterar capacidade da lixeira
-		Collector collector = new Collector("Coletor" + index, maxTrashCapacity, matrix.getBlock(position));
+		Collector collector = new Collector("Coletor" + index, maxBatteryCapacity, maxTrashCapacity, matrix.getBlock(position));
 
 		matrix.add(position, collector);
 		collectors.add(collector);
@@ -220,5 +222,14 @@ public class Main {
 	public void setMaxTrashCapacity(Integer maxTrashCapacity) {
 		this.maxTrashCapacity = maxTrashCapacity;
 	}
+
+	public Integer getMaxBatteryCapacity() {
+		return maxBatteryCapacity;
+	}
+
+	public void setMaxBatteryCapacity(Integer maxBatteryCapacity) {
+		this.maxBatteryCapacity = maxBatteryCapacity;
+	}
+	
 	
 }
