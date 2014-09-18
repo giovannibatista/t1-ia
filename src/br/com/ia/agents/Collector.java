@@ -1,6 +1,8 @@
 package br.com.ia.agents;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import br.com.ia.utils.CollectorStatus;
 import br.com.ia.utils.Direction;
 import br.com.ia.utils.Position;
@@ -65,14 +67,15 @@ public class Collector extends Agent {
 		paperTrash = new ArrayList<Trash>();
 		plasticTrash = new ArrayList<Trash>();
 
+		// inner status
 		maxBatteryCapacity = batteryCapacity;
 		maxTrashCapacity = trashCapacity;
-
 		batteryCharge = batteryCapacity;
-
-		direction = Direction.NONE;
-
+		
+		// wandering config
 		status = CollectorStatus.WANDER;
+		direction = Direction.NONE;
+		way = Way.DOWNRIGHT;
 	}
 
 	/* CONFIGURATION METHODS */
@@ -166,7 +169,7 @@ public class Collector extends Agent {
 			return;
 		}
 
-		if(status == CollectorStatus.WALKINGRECHARGER || status == CollectorStatus.RECHARGING){
+		if (status == CollectorStatus.WALKINGRECHARGER || status == CollectorStatus.RECHARGING) {
 			return;
 		}
 
@@ -176,7 +179,7 @@ public class Collector extends Agent {
 			return;
 		}
 
-		if(status == CollectorStatus.WALKINGTRASHCAN){
+		if (status == CollectorStatus.WALKINGTRASHCAN) {
 			return;
 		}
 
@@ -191,39 +194,39 @@ public class Collector extends Agent {
 	 */
 	private void plan() {
 		switch (status) {
-		case LOOKINGRECHARGER:
-			objective = Position.getPseudoNearest(currentBlock.getPosition(), rechargers);
-			status = CollectorStatus.WALKINGRECHARGER;
-			System.out.println("* Definiu ir para o carregador em " + objective.toString());
-			break;
-		case WALKINGRECHARGER:
-			System.out.println("* Indo para o carregador em " + objective.toString());
-			break;
-		case LOOKINGTRASHCAN:
-			objective = getNearestTrashCan();
-			status = CollectorStatus.WALKINGTRASHCAN;
-			System.out.println("* Definiu ir para lixeira em " + objective.toString());
-			break;
-		case WALKINGTRASHCAN:
-
-			break;
-		case LOOKINGTRASH:
-			objective = Position.getPseudoNearest(currentBlock.getPosition(), getTrashFound());
-			status = CollectorStatus.WALKINGTRASH;
-			System.out.println("* Achou lixo em " + objective.toString());
-			break;
-		case WALKINGTRASH:
-
-			break;
-		case RECHARGING:
-			System.out.println("Recarregando...");
-			break;
-		case WANDER:
-		default:
-			objective = wander().getPosition();
-			status = CollectorStatus.WANDER;
-			System.out.println("* Nada encontrado, então caminhar");
-			break;
+			case LOOKINGRECHARGER:
+				objective = Position.getPseudoNearest(currentBlock.getPosition(), rechargers);
+				status = CollectorStatus.WALKINGRECHARGER;
+				System.out.println("* Definiu ir para o carregador em " + objective.toString());
+				break;
+			case WALKINGRECHARGER:
+				System.out.println("* Indo para o carregador em " + objective.toString());
+				break;
+			case LOOKINGTRASHCAN:
+				objective = getNearestTrashCan();
+				status = CollectorStatus.WALKINGTRASHCAN;
+				System.out.println("* Definiu ir para lixeira em " + objective.toString());
+				break;
+			case WALKINGTRASHCAN:
+	
+				break;
+			case LOOKINGTRASH:
+				objective = Position.getPseudoNearest(currentBlock.getPosition(), getTrashFound());
+				status = CollectorStatus.WALKINGTRASH;
+				System.out.println("* Achou lixo em " + objective.toString());
+				break;
+			case WALKINGTRASH:
+	
+				break;
+			case RECHARGING:
+				System.out.println("Recarregando...");
+				break;
+			case WANDER:
+			default:
+				objective = wander().getPosition();
+				status = CollectorStatus.WANDER;
+				System.out.println("* Nada encontrado, então caminhar");
+				break;
 		}
 	}
 
@@ -273,19 +276,18 @@ public class Collector extends Agent {
 			return;
 		}
 
-		if(status != CollectorStatus.RECHARGING){
+		if (status != CollectorStatus.RECHARGING) {
 			recharger.addCollector(this);
 		}
 
-		if(maxBatteryCapacity > batteryCharge){
+		if (maxBatteryCapacity > batteryCharge) {
 			batteryCharge++;
 			status = CollectorStatus.RECHARGING;
 			System.out.println("Bateria: " + batteryCharge + ">>" + maxBatteryCapacity);
-		}else{
+		} else {
 			status = CollectorStatus.WANDER;
 			recharger.removeCollector(this);
 		}
-
 	}
 
 	private void collectTrash() {
@@ -313,57 +315,159 @@ public class Collector extends Agent {
 	}
 
 	private Block wander() {
-		Block block = null;
 		if (possibleBlocks.size() == 0) {
-			return block;
+			return null;
+		} else if (way == Way.DOWNRIGHT && this.isDownRightEnd()) {
+			way = Way.UPLEFT;
+			direction = Direction.LEFT;
+			System.out.println("* inverteu o caminho para UPLEFT");
+		} else if (way == Way.UPLEFT && this.isUpLeftEnd()) {
+			way = Way.DOWNRIGHT;
+			direction = Direction.RIGHT;
+			System.out.println("* inverteu o caminho para DOWNRIGHT");
 		}
-
+		
+		if (way == Way.DOWNRIGHT) {
+			return WanderDownRight();
+		} else if (way == Way.UPLEFT) {
+			return WanderUpLeft();
+		}
+		
+		return null;
+	}
+	
+	private Block WanderDownRight() {
+		Block block = null;
+		
 		if (direction == Direction.NONE || direction == Direction.RIGHT) {
 			block = goRight();
 			if (block != null) return block;
-
+			
 			block = goDown();
 			if (block != null) return block;
-
+			
 			block = goLeft();
 			if (block != null) return block;
-
+			
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.DOWN) {
 			block = goLeft();
 			if (block != null) return block;
-
+			
 			block = goRight();
 			if (block != null) return block;
-
+			
 			block = goDown();
 			if (block != null) return block;
-
+			
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.LEFT) {
 			block = goLeft();
 			if (block != null) return block;
-
+			
 			block = goDown();
 			if (block != null) return block;
-
+			
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.UP) {
 			block = goRight();
 			if (block != null) return block;
-
+			
 			block = goLeft();
 			if (block != null) return block;
-
+			
 			block = goUp();
 			if (block != null) return block;
 		}
-
-
-		return block;
+		
+		return null;
+	}
+	
+	private Block WanderUpLeft() {
+		Block block = null;
+		
+		if (direction == Direction.NONE || direction == Direction.LEFT) {
+			block = goLeft();
+			if (block != null) return block;
+			
+			block = goUp();
+			if (block != null) return block;
+			
+			block = goRight();
+			if (block != null) return block;
+			
+			block = goDown();
+			if (block != null) return block;
+		} else if (direction == Direction.UP) {
+			block = goRight();
+			if (block != null) return block;
+			
+			block = goLeft();
+			if (block != null) return block;
+			
+			block = goUp();
+			if (block != null) return block;
+			
+			block = goDown();
+			if (block != null) return block;
+		} else if (direction == Direction.RIGHT) {
+			block = goRight();
+			if (block != null) return block;
+			
+			block = goUp();
+			if (block != null) return block;
+			
+			block = goDown();
+			if (block != null) return block;
+		} else if (direction == Direction.DOWN) {
+			block = goLeft();
+			if (block != null) return block;
+			
+			block = goRight();
+			if (block != null) return block;
+			
+			block = goDown();
+			if (block != null) return block;
+		}
+		
+		return null;
+	}
+	
+	private boolean isDownRightEnd() {
+		int higher = 0;
+		
+		for (Block block : possibleBlocks) {
+			int xCurrent = currentBlock.getPosition().getX();
+			int yCurrent = currentBlock.getPosition().getY();
+			int xBlock = block.getPosition().getX();
+			int yBlock = block.getPosition().getY();
+			
+			if (xCurrent < xBlock || yCurrent < yBlock) {
+				higher++;
+			}
+		}
+		
+		return (higher <= 1);
+	}
+	
+	private boolean isUpLeftEnd() {
+		int lower = 0;
+		
+		for (Block block : possibleBlocks) {
+			int xCurrent = currentBlock.getPosition().getX();
+			int yCurrent = currentBlock.getPosition().getY();
+			int xBlock = block.getPosition().getX();
+			int yBlock = block.getPosition().getY();
+			
+			if (xCurrent > xBlock || yCurrent > yBlock) {
+				lower++;
+			}
+		}
+		
+		return (lower <= 1);
 	}
 
 	private Block goRight() {
@@ -413,7 +517,7 @@ public class Collector extends Agent {
 
 		return null;
 	}
-
+	
 	private ArrayList<Block> getPossibleBlocks() {
 		ArrayList<Block> possibleBlocks = new ArrayList<Block>();
 		excludedBlocks = new ArrayList<Block>();
