@@ -50,10 +50,10 @@ public class Matrix {
 
 	public void createMatrix() {
 		matrix = new Block[size][size];
-		for (int i = 0; i < matrix.length; i++) {
-			for (int j = 0; j < matrix[i].length; j++) {
-				if (matrix[i][j] == null) {
-					matrix[i][j] = new Block(i, j);
+		for (int x = 0; x < matrix.length; x++) {
+			for (int y = 0; y < matrix[x].length; y++) {
+				if (matrix[x][y] == null) {
+					matrix[x][y] = new Block(x, y);
 				}
 			}
 		}
