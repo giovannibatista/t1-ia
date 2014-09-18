@@ -131,18 +131,27 @@ public class Collector extends Agent {
 	 */
 	public Block run(ArrayList<Block> neighbors) {
 		if ((neighbors == null) || (neighbors.size() == 0)) {
-			// No romm to walk. :(
+			System.out.println("Sem espaço para andar. :(");
+			return null;
+		}
+		
+		if (batteryCharge <= 0) {
+			System.out.println("Acabou a bateria. :(");
 			return null;
 		}
 
 		this.neighbors = neighbors;
 		this.possibleBlocks = getPossibleBlocks();
-
+		
 		observe();
 
 		plan();
 
-		return act();
+		Block moveTo = act();
+		
+		batteryCharge--;
+		
+		return moveTo;
 	}
 	
 	/**
@@ -150,12 +159,14 @@ public class Collector extends Agent {
 	 */
 	private void observe() {
 		if (status != CollectorStatus.LOOKINGRECHARGER && batteryLow()) {
+			System.out.println("* Precisa carregar, procurar por carregador");
 			status = CollectorStatus.LOOKINGRECHARGER;
 			return;
 		}
 		
 		if (hasFullTrash()) {
 			status = CollectorStatus.LOOKINGTRASHCAN;
+			System.out.println("* Precisa esvaziar, procurar por lixeira");
 			return;
 		}
 		
@@ -173,6 +184,7 @@ public class Collector extends Agent {
 			case LOOKINGRECHARGER:
 				objective = Position.getPseudoNearest(currentBlock.getPosition(), rechargers);
 				status = CollectorStatus.WALKINGRECHARGER;
+				System.out.println("* Definiu ir para carregador em " + objective.toString());
 				break;
 			case WALKINGRECHARGER:
 				
@@ -180,6 +192,7 @@ public class Collector extends Agent {
 			case LOOKINGTRASHCAN:
 				objective = getNearestTrashCan();
 				status = CollectorStatus.WALKINGTRASHCAN;
+				System.out.println("* Definiu ir para lixeira em " + objective.toString());
 				break;
 			case WALKINGTRASHCAN:
 				
@@ -187,14 +200,16 @@ public class Collector extends Agent {
 			case LOOKINGTRASH:
 				objective = Position.getPseudoNearest(currentBlock.getPosition(), getTrashFound());
 				status = CollectorStatus.WALKINGTRASH;
+				System.out.println("* Achou lixo em " + objective.toString());
 				break;
 			case WALKINGTRASH:
 				
 				break;
 			case WANDER:
 			default:
-				status = CollectorStatus.WANDER;
 				objective = wander().getPosition();
+				status = CollectorStatus.WANDER;
+				System.out.println("* Nada encontrado, então caminhar");
 				break;
 		}
 	}
@@ -247,6 +262,8 @@ public class Collector extends Agent {
 			default:
 				break;
 		}
+		
+		System.out.println("* Pegou lixo " + trash.toString());
 		
 		status = CollectorStatus.WANDER;
 	}
@@ -381,7 +398,7 @@ public class Collector extends Agent {
 		double res = Double.MAX_VALUE;
 		for (Position position : rechargers) {
 			double p = Position.getDiference(currentBlock.getPosition(), position);
-			if (res < p) {
+			if (res > p) {
 				res = p;
 			}
 		}
@@ -464,5 +481,14 @@ public class Collector extends Agent {
 	
 	public CollectorStatus getStatus() {
 		return status;
+	}
+	
+	public String toString() {
+		return "\n"
+			+ "Bateria: " + this.batteryCharge + "\n"
+			+ "Vidro: " + this.glassTrash.size() + "\n"
+			+ "Metal: " + this.metalTrash.size() + "\n"
+			+ "Papel: " + this.paperTrash.size() + "\n"
+			+ "Plástico: " + this.plasticTrash.size();
 	}
 }

@@ -75,12 +75,18 @@ public class Main {
 
 	public void next() {
 		for (Collector c : collectors) {
+			System.out.println("\nColetor: " + c.getName() + " em " + c.getPosition());
+			
 			Block from = matrix.getBlock(c.getPosition());
 			Block to = c.run(matrix.getNeighbors(c.getPosition()));
 			
 			if (to != null) {
 				matrix.move(c, from, to);
+				System.out.println("* Moveu para " + to.getPosition());
 			}
+			
+			System.out.println("Status: " + c.toString());
+			System.out.println();
 		}
 		
 		RequestContext.getCurrentInstance().update("agents");
@@ -92,7 +98,7 @@ public class Main {
 		}
 
 		for (int i = 0; i < amountTrashCans; i++) {
-			insertTrashCan();
+			insertTrashCan(i);
 		}
 
 		for (int i = 0; i < amountRechargers; i++) {
@@ -108,21 +114,21 @@ public class Main {
 		if (matrix.hasAgent(position))
 			insertCollector(index);
 		
-		Collector collector = new Collector("Coletor" + index, maxBatteryCapacity, maxTrashCapacity, matrix.getBlock(position));
+		Collector collector = new Collector("C" + index, maxBatteryCapacity, maxTrashCapacity, matrix.getBlock(position));
 
 		matrix.add(position, collector);
 		collectors.add(collector);
 	}
 	
-	private void insertTrashCan() {
+	private void insertTrashCan(Integer index) {
 		Position position = Position.getRandomPosition(matrix.getSize());
 
 		if (matrix.hasAgent(position))
-			insertTrashCan();
+			insertTrashCan(index);
 
 		TrashType trashCanType = TrashTypeGenerator.next();
 		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
-		TrashCan trashCan = new TrashCan("Lixeira", img, maxTrashCanCapacity, trashCanType);
+		TrashCan trashCan = new TrashCan("L" + index, img, maxTrashCanCapacity, trashCanType);
 
 		matrix.add(position, trashCan);
 		trashCans.add(trashCan);
