@@ -164,6 +164,7 @@ public class Collector extends Agent {
 	private void observe() {
 		if (status != CollectorStatus.LOOKINGRECHARGER
 			&& status != CollectorStatus.WALKINGRECHARGER
+			&& status != CollectorStatus.RECHARGING
 			&& batteryLow()) {
 			status = CollectorStatus.LOOKINGRECHARGER;
 			System.out.println("* Precisa carregar, procurar por carregador");
@@ -209,7 +210,7 @@ public class Collector extends Agent {
 				System.out.println("* Definiu ir para lixeira em " + objective.toString());
 				break;
 			case WALKINGTRASHCAN:
-	
+				System.out.println("* Indo para a lixeira em " + objective.toString());
 				break;
 			case LOOKINGTRASH:
 				objective = Position.getPseudoNearest(currentBlock.getPosition(), getTrashFound());
@@ -217,7 +218,7 @@ public class Collector extends Agent {
 				System.out.println("* Achou lixo em " + objective.toString());
 				break;
 			case WALKINGTRASH:
-	
+				
 				break;
 			case RECHARGING:
 				System.out.println("* Recarregando...");
@@ -254,8 +255,10 @@ public class Collector extends Agent {
 				}
 			}
 			
-			recharge(aux);
-			return null;
+			if (aux != null) {
+				recharge(aux);
+				return null;
+			}
 		}
 		
 		if (status == CollectorStatus.WALKINGTRASHCAN || status == CollectorStatus.EMPTYING) {
@@ -267,8 +270,10 @@ public class Collector extends Agent {
 				}
 			}
 			
-			emptying(aux);
-			return null;
+			if (aux != null) {
+				emptying(aux);
+				return null;
+			}
 		}
 
 		ArrayList<Position> positions = new ArrayList<Position>();
@@ -293,7 +298,7 @@ public class Collector extends Agent {
 	
 	//REFAZER A LOGICA DE TIRAR O LIXO DO COLETOR PARA LIXEIRA
 	private void emptying(Block block) {
-		if (!(block.hasAgent() && block.getAgent() instanceof TrashCan)) {
+		if (!(block != null && block.hasAgent() && block.getAgent() instanceof TrashCan)) {
 			return;
 		}
 		
@@ -346,7 +351,7 @@ public class Collector extends Agent {
 	}
 	
 	private void recharge(Block block) {
-		if (!(block.hasAgent() && block.getAgent() instanceof Recharger)) {
+		if (!(block != null && block.hasAgent() && block.getAgent() instanceof Recharger)) {
 			return;
 		}
 		
@@ -648,8 +653,8 @@ public class Collector extends Agent {
 	}
 	
 	private ArrayList<Block> getPossibleBlocks() {
-		ArrayList<Block> possibleBlocks = new ArrayList<Block>();
-		excludedBlocks = new ArrayList<Block>();
+		this.possibleBlocks = new ArrayList<Block>();
+		this.excludedBlocks = new ArrayList<Block>();
 
 		for (Block block : neighbors) {
 			for (int x = -1; x <= 1; x++) {
@@ -662,11 +667,11 @@ public class Collector extends Agent {
 					int relY = (currentBlock.getPosition().getY() + y);
 
 					if (block.getPosition().getX() == relX
-							&& block.getPosition().getY() == relY) {
-						if(block.hasAgent()){
-							excludedBlocks.add(block);
-						}else{
+						&& block.getPosition().getY() == relY) {
+						if (!block.hasAgent()) {
 							possibleBlocks.add(block);
+						} else {
+							excludedBlocks.add(block);
 						}
 					}
 				}

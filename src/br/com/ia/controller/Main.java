@@ -52,6 +52,8 @@ public class Main {
 		matrix.createMatrix();
 
 		createEnvironment();
+		TrashTypeGenerator.setIndex(0);
+		
 		RequestContext.getCurrentInstance().update("agents");
 	}
 

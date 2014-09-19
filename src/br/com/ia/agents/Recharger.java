@@ -20,8 +20,11 @@ public class Recharger extends Agent {
 	public boolean addCollector(Collector collector) {
 		if (collector == null || isBusy())
 			return false;
-
-		collectors.add(collector);
+		
+		if (!collectors.contains(collector)) {
+			collectors.add(collector);
+		}
+		
 		return true;
 	}
 
