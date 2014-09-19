@@ -219,10 +219,10 @@ public class Collector extends Agent {
 	
 				break;
 			case RECHARGING:
-				System.out.println("Recarregando...");
+				System.out.println("* Recarregando...");
 				break;
 			case EMPTYING:
-				System.out.println("Recarregando...");
+				System.out.println("* Esvaziando...");
 				break;
 			case WANDER:
 			default:
@@ -253,7 +253,7 @@ public class Collector extends Agent {
 			}
 		}
 		
-		if(status == CollectorStatus.WALKINGTRASHCAN || status == CollectorStatus.EMPTYING){
+		if (status == CollectorStatus.WALKINGTRASHCAN || status == CollectorStatus.EMPTYING) {
 			for (Block block : excludedBlocks) {
 				if (block.getPosition().equals(objective)) {
 					emptying(block);
@@ -284,61 +284,58 @@ public class Collector extends Agent {
 	
 	//REFAZER A LOGICA DE TIRAR O LIXO DO COLETOR PARA LIXEIRA
 	private void emptying(Block block) {
-		TrashCan trashCan = (TrashCan) block.getAgent();
-
-		if(trashCan.isFull()){
-			System.out.println(trashCan.getName() + "está cheia!");
+		if (!(block.hasAgent() && block.getAgent() instanceof TrashCan)) {
 			return;
 		}
+		
+		TrashCan trashCan = (TrashCan)block.getAgent();
 
-		if(trashCan.addTrash()){
-			switch (trashType) {
+		if (trashCan.isFull()) {
+			System.out.println(trashCan.getName() + " está cheia!");
+			return;
+		}
+		
+		switch (trashType) {
 			case GLASS:
-				if(!glassTrash.isEmpty())
-					glassTrash.remove(glassTrash.size());
-				else{
+				if (glassTrash.isEmpty()) {
 					status = CollectorStatus.WANDER;
 					return;
 				}
+				
+				trashCan.addTrash(glassTrash.remove(0));
 				break;
 			case METAL:
-				if(!metalTrash.isEmpty())
-					metalTrash.remove(metalTrash.size());
-				else{
+				if (metalTrash.isEmpty()) {
 					status = CollectorStatus.WANDER;
 					return;
 				}
+				
+				trashCan.addTrash(metalTrash.remove(0));
 				break;
 			case PAPER:
-				if(!paperTrash.isEmpty())
-					paperTrash.remove(paperTrash.size());
-				else{
+				if (paperTrash.isEmpty()) {
 					status = CollectorStatus.WANDER;
 					return;
 				}
+				
+				trashCan.addTrash(paperTrash.remove(0));
 				break;
 			case PLASTIC:
-				if(!paperTrash.isEmpty())
-					paperTrash.remove(paperTrash.size());
-				else{
+				if (plasticTrash.isEmpty()) {
 					status = CollectorStatus.WANDER;
 					return;
 				}
+				
+				trashCan.addTrash(plasticTrash.remove(0));
 				break;
 			default:
 				// Oops. :(
 				break;
-			}
-
-			status = CollectorStatus.EMPTYING;
-		}else{
-			
 		}
-			
 
+		status = CollectorStatus.EMPTYING;
 	}
-
-
+	
 	private void recharge(Block block) {
 		Recharger recharger = (Recharger) block.getAgent();
 		if(recharger.isBusy() || status != CollectorStatus.RECHARGING){
@@ -527,7 +524,7 @@ public class Collector extends Agent {
 	private boolean isUpLeftEnd() {
 		int lower = 0;
 		
-		for (Block block : possibleBlocks) {
+		for (Block block : neighbors) {
 			int xCurrent = currentBlock.getPosition().getX();
 			int yCurrent = currentBlock.getPosition().getY();
 			int xBlock = block.getPosition().getX();
@@ -540,7 +537,7 @@ public class Collector extends Agent {
 		
 		return (lower <= 1);
 	}
-
+	
 	private Block goRight() {
 		for (Block possibleBlock : possibleBlocks) {	
 			if (possibleBlock.getPosition().getX() == currentBlock.getPosition().getX()
@@ -586,6 +583,30 @@ public class Collector extends Agent {
 			}
 		}
 
+		return null;
+	}
+	
+	private Block goDiagonal() {
+		for (Block possibleBlock : possibleBlocks) {
+			if (way == Way.DOWNRIGHT) {
+				if ((possibleBlock.getPosition().getX() > currentBlock.getPosition().getX()
+						&& possibleBlock.getPosition().getY() > currentBlock.getPosition().getY())
+					|| (possibleBlock.getPosition().getX() > currentBlock.getPosition().getX()
+						&& possibleBlock.getPosition().getY() < currentBlock.getPosition().getY())) {
+					direction = Direction.DOWN;
+					return possibleBlock;
+				}
+			} else if (way == Way.UPLEFT) {
+				if ((possibleBlock.getPosition().getX() < currentBlock.getPosition().getX()
+						&& possibleBlock.getPosition().getY() < currentBlock.getPosition().getY())
+					|| (possibleBlock.getPosition().getX() < currentBlock.getPosition().getX()
+						&& possibleBlock.getPosition().getY() > currentBlock.getPosition().getY())) {
+					direction = Direction.UP;
+					return possibleBlock;
+				}
+			}
+		}
+		
 		return null;
 	}
 	
