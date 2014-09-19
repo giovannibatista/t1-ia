@@ -162,10 +162,11 @@ public class Collector extends Agent {
 	 * Observe its state and prepare to plan the next move.
 	 */
 	private void observe() {
-		if (status != CollectorStatus.LOOKINGRECHARGER &&
-				status != CollectorStatus.WALKINGRECHARGER && batteryLow()) {
-			System.out.println("* Precisa carregar, procurar por carregador");
+		if (status != CollectorStatus.LOOKINGRECHARGER
+			&& status != CollectorStatus.WALKINGRECHARGER
+			&& batteryLow()) {
 			status = CollectorStatus.LOOKINGRECHARGER;
+			System.out.println("* Precisa carregar, procurar por carregador");
 			return;
 		}
 
@@ -245,21 +246,29 @@ public class Collector extends Agent {
 		}
 
 		if (status == CollectorStatus.WALKINGRECHARGER || status == CollectorStatus.RECHARGING) {
+			Block aux = null;
 			for (Block block : excludedBlocks) {
 				if (block.getPosition().equals(objective)) {
-					recharge(block);
-					return null;
+					aux = block;					
+					continue;
 				}
 			}
+			
+			recharge(aux);
+			return null;
 		}
 		
 		if (status == CollectorStatus.WALKINGTRASHCAN || status == CollectorStatus.EMPTYING) {
+			Block aux = null;
 			for (Block block : excludedBlocks) {
 				if (block.getPosition().equals(objective)) {
-					emptying(block);
-					return null;
+					aux = block;
+					continue;
 				}
 			}
+			
+			emptying(aux);
+			return null;
 		}
 
 		ArrayList<Position> positions = new ArrayList<Position>();
@@ -337,44 +346,48 @@ public class Collector extends Agent {
 	}
 	
 	private void recharge(Block block) {
-		Recharger recharger = (Recharger) block.getAgent();
-		if(recharger.isBusy() || status != CollectorStatus.RECHARGING){
-			System.out.println("O carregador está ocupado :(.");
+		if (!(block.hasAgent() && block.getAgent() instanceof Recharger)) {
 			return;
 		}
-
-		if(status != CollectorStatus.RECHARGING){
+		
+		Recharger recharger = (Recharger)block.getAgent();
+		
+		if (recharger.isBusy()) {
+			System.out.println("* O carregador está ocupado :(.");
+			return;
+		} else if (status == CollectorStatus.WALKINGRECHARGER) {
 			recharger.addCollector(this);
-		}
-
-		if(maxBatteryCapacity > batteryCharge){
-			batteryCharge++;
 			status = CollectorStatus.RECHARGING;
-			System.out.println("Bateria: " + batteryCharge + ">>" + maxBatteryCapacity);
-		}else{
-			status = CollectorStatus.WANDER;
-			recharger.removeCollector(this);
+			return;
 		}
-
+		
+		if (maxBatteryCapacity > batteryCharge) {
+			batteryCharge++;
+			System.out.println("* Carregando: bateria: " + batteryCharge + " >> " + maxBatteryCapacity);
+		} else {
+			recharger.removeCollector(this);
+			status = CollectorStatus.WANDER;
+			System.out.println("* Carregou jóia. :)");
+		}
 	}
 
 	private void collectTrash() {
 		Trash trash = currentBlock.collectTrash();
 		switch (trash.getTrashType()) {
-		case GLASS:
-			glassTrash.add(trash);
-			break;
-		case METAL:
-			metalTrash.add(trash);
-			break;
-		case PAPER:
-			paperTrash.add(trash);
-			break;
-		case PLASTIC:
-			plasticTrash.add(trash);
-			break;
-		default:
-			break;
+			case GLASS:
+				glassTrash.add(trash);
+				break;
+			case METAL:
+				metalTrash.add(trash);
+				break;
+			case PAPER:
+				paperTrash.add(trash);
+				break;
+			case PLASTIC:
+				plasticTrash.add(trash);
+				break;
+			default:
+				break;
 		}
 
 		System.out.println("* Pegou lixo " + trash.toString());
@@ -417,6 +430,9 @@ public class Collector extends Agent {
 			block = goLeft();
 			if (block != null) return block;
 			
+			block = goDiagonal();
+			if (block != null) return block;
+			
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.DOWN) {
@@ -429,6 +445,9 @@ public class Collector extends Agent {
 			block = goDown();
 			if (block != null) return block;
 			
+			block = goDiagonal();
+			if (block != null) return block;
+			
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.LEFT) {
@@ -438,6 +457,9 @@ public class Collector extends Agent {
 			block = goDown();
 			if (block != null) return block;
 			
+			block = goDiagonal();
+			if (block != null) return block;
+			
 			block = goUp();
 			if (block != null) return block;
 		} else if (direction == Direction.UP) {
@@ -445,6 +467,9 @@ public class Collector extends Agent {
 			if (block != null) return block;
 			
 			block = goLeft();
+			if (block != null) return block;
+			
+			block = goDiagonal();
 			if (block != null) return block;
 			
 			block = goUp();
@@ -467,6 +492,9 @@ public class Collector extends Agent {
 			block = goRight();
 			if (block != null) return block;
 			
+			block = goDiagonal();
+			if (block != null) return block;
+			
 			block = goDown();
 			if (block != null) return block;
 		} else if (direction == Direction.UP) {
@@ -479,6 +507,9 @@ public class Collector extends Agent {
 			block = goUp();
 			if (block != null) return block;
 			
+			block = goDiagonal();
+			if (block != null) return block;
+			
 			block = goDown();
 			if (block != null) return block;
 		} else if (direction == Direction.RIGHT) {
@@ -488,6 +519,9 @@ public class Collector extends Agent {
 			block = goUp();
 			if (block != null) return block;
 			
+			block = goDiagonal();
+			if (block != null) return block;
+			
 			block = goDown();
 			if (block != null) return block;
 		} else if (direction == Direction.DOWN) {
@@ -495,6 +529,9 @@ public class Collector extends Agent {
 			if (block != null) return block;
 			
 			block = goRight();
+			if (block != null) return block;
+			
+			block = goDiagonal();
 			if (block != null) return block;
 			
 			block = goDown();

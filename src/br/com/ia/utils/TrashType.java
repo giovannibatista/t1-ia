@@ -4,6 +4,5 @@ public enum TrashType {
 	GLASS,
 	METAL,
 	PAPER,
-	PLASTIC,
-	NONE	
+	PLASTIC
 }

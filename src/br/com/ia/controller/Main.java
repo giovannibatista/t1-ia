@@ -127,9 +127,7 @@ public class Main {
 			insertTrashCan(index);
 
 		TrashType trashCanType = TrashTypeGenerator.next();
-		if(trashCanType == TrashType.NONE){
-			trashCanType = TrashTypeGenerator.next();
-		}
+		
 		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
 		TrashCan trashCan = new TrashCan("L" + index, img, maxTrashCanCapacity, trashCanType);
 
@@ -161,17 +159,15 @@ public class Main {
 		Integer freeBlocks = (matrix.getSize() ^ 2) - (amountTrashCans + amountRechargers + amountCollectors);
 		Integer amountTrashes = (int)(Math.random() * freeBlocks) + (matrix.getSize() / 2);
 
-		if (amountTrashes == 0)
+		if (amountTrashes == 0) {
 			insertTrash();
+		}
 
 		for (int i = 0; i < amountTrashes; i++) {
 			Position position = Position.getRandomPosition(matrix.getSize());
 
 			if (!matrix.hasAgent(position)) {
 				TrashType trashType = TrashTypeGenerator.getRandomTrashType();
-				if(trashType == TrashType.NONE){
-					trashType = TrashType.METAL;
-				}
 				String img = TrashTypeGenerator.getTrashIcon(trashType);
 				Trash trash = new Trash(trashType, img);
 				matrix.add(position, trash);
