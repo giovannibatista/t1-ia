@@ -357,13 +357,15 @@ public class Collector extends Agent {
 		
 		Recharger recharger = (Recharger)block.getAgent();
 		
-		if (recharger.isBusy()) {
-			System.out.println("* O carregador está ocupado :(.");
-			return;
-		} else if (status == CollectorStatus.WALKINGRECHARGER) {
-			recharger.addCollector(this);
-			status = CollectorStatus.RECHARGING;
-			return;
+		if (status == CollectorStatus.WALKINGRECHARGER) {
+			if (recharger.isBusy()) {
+				System.out.println("* O carregador está ocupado :(.");
+				return;
+			} else {
+				recharger.addCollector(this);
+				status = CollectorStatus.RECHARGING;
+				return;
+			}
 		}
 		
 		if (maxBatteryCapacity > batteryCharge) {
