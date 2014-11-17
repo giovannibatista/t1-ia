@@ -1,21 +1,30 @@
-body{
+body {
 	font-size: 15px;
 }
 
-table#agents{
+tr > td:first-child {
+	width: 150px;
+}
+
+input[type=text] {
+	width: 100px;
+}
+
+table#agents {
 	border: 1px solid;
 }
 
-#agents td{
-	width: 40px;
-	height: 40px;
+#agents td {
+	width: 50px;
+	height: 50px;
+	font-size: 10px;
 }
 
-#agentsTable{
+#agentsTable {
 	border: none;
 }
 
-.icon{
+.icon {
 	width: 40px;
 	height: 40px;
 	border: 1px solid;

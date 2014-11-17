@@ -218,7 +218,7 @@ public class Collector extends Agent {
 				System.out.println("* Achou lixo em " + objective.toString());
 				break;
 			case WALKINGTRASH:
-				
+				System.out.println("* Indo para o lixo em " + objective.toString());
 				break;
 			case RECHARGING:
 				System.out.println("* Recarregando...");
@@ -284,8 +284,15 @@ public class Collector extends Agent {
 
 			positions.add(block.getPosition());
 		}
-
-		Position pos = Position.getPseudoNearest(objective, positions);
+		
+		ArrayList<Position> future = new ArrayList<Position>();
+		for (Block block : neighbors) {
+			if (!possibleBlocks.contains(block) && !block.hasAgent()) {
+				future.add(block.getPosition());
+			}
+		}
+		
+		Position pos = Position.getPseudoNearest(currentBlock.getPosition(), objective, positions, future);
 		for (Block block : possibleBlocks) {
 			if (block.getPosition().equals(pos)) {
 				return block;
@@ -295,8 +302,7 @@ public class Collector extends Agent {
 		return null;
 	}
 	
-	
-	//REFAZER A LOGICA DE TIRAR O LIXO DO COLETOR PARA LIXEIRA
+	// REFAZER A LOGICA DE TIRAR O LIXO DO COLETOR PARA LIXEIRA
 	private void emptying(Block block) {
 		if (!(block != null && block.hasAgent() && block.getAgent() instanceof TrashCan)) {
 			return;
@@ -686,7 +692,7 @@ public class Collector extends Agent {
 	private boolean batteryLow() {
 		double res = Double.MAX_VALUE;
 		for (Position position : rechargers) {
-			double p = Position.getDiference(currentBlock.getPosition(), position);
+			double p = Position.getDiagonalDistance(currentBlock.getPosition(), position);
 			if (res > p) {
 				res = p;
 			}

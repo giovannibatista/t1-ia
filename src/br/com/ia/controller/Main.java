@@ -24,19 +24,19 @@ public class Main {
 	private Integer amountCollectors;
 	private Integer amountTrashCans;
 	private Integer amountRechargers;
-	
+
 	private Integer maxTrashCanCapacity;
 	private Integer maxTrashCapacity;
 	private Integer maxBatteryCapacity;
-	
+
 	private Matrix matrix;
 	private ArrayList<Collector> collectors;
 	private ArrayList<TrashCan> trashCans;
 	private ArrayList<Recharger> rechargers;
-	
+
 	@PostConstruct
 	public void init() {
-		System.out.println(" Online! ");
+		System.out.println(" Reloaded! ");
 		amountCollectors = 1;
 		amountTrashCans = 4;
 		amountRechargers = 1;
@@ -53,7 +53,7 @@ public class Main {
 
 		createEnvironment();
 		TrashTypeGenerator.setIndex(0);
-		
+
 		RequestContext.getCurrentInstance().update("agents");
 	}
 
@@ -68,68 +68,75 @@ public class Main {
 		matrix = new Matrix(amountCollectors, amountTrashCans, amountRechargers);
 		matrix.createMatrix();
 		//matrix.createMatrixTestMoving();
-		
+
 		createEnvironment();
 		RequestContext.getCurrentInstance().update("agents");
 	}
-	
-	
 
 	public void next() {
 		for (Collector c : collectors) {
 			System.out.println("\nColetor: " + c.getName() + " em " + c.getPosition() + " Status: " + c.getStatus());
-			
+
 			Block from = matrix.getBlock(c.getPosition());
 			Block to = c.run(matrix.getNeighbors(c.getPosition()));
-			
+
 			if (to != null) {
 				matrix.move(c, from, to);
 				System.out.println("* Moveu para " + to.getPosition());
 			}
-			
+
 			System.out.println("Status: " + c.toString());
 			System.out.println();
 		}
-		
+
 		RequestContext.getCurrentInstance().update("agents");
 	}
 
 	private void createEnvironment() {
+		System.out.println("Criou coletor em ");
 		for (int i = 0; i < amountCollectors; i++) {
 			insertCollector(i);
 		}
 
+		System.out.println("Criou latas de lixo em ");
 		for (int i = 0; i < amountTrashCans; i++) {
 			insertTrashCan(i);
 		}
 
+		System.out.println("Criou carregadores em ");
 		for (int i = 0; i < amountRechargers; i++) {
 			insertRechargers();
 		}
-	
+
 		insertTrash();
 	}
-	
+
 	private void insertCollector(Integer index) {
 		Position position = Position.getRandomPosition(matrix.getSize());
 
-		if (matrix.hasAgent(position))
+		if (matrix.hasAgent(position)) {
 			insertCollector(index);
-		
+			return;
+		}
+
 		Collector collector = new Collector("C" + index, maxBatteryCapacity, maxTrashCapacity, matrix.getBlock(position));
 
 		matrix.add(position, collector);
 		collectors.add(collector);
+		
+		System.out.print(position.toString());
 	}
-	
+
 	private void insertTrashCan(Integer index) {
 		Position position = Position.getRandomPosition(matrix.getSize());
 
-		if (matrix.hasAgent(position))
+		if (matrix.hasAgent(position)) {
 			insertTrashCan(index);
+			return;
+		}
 
 		TrashType trashCanType = TrashTypeGenerator.next();
-		
+
 		String img = TrashTypeGenerator.getTrashCanIcon(trashCanType);
 		TrashCan trashCan = new TrashCan("L" + index, img, maxTrashCanCapacity, trashCanType);
 
@@ -144,8 +151,10 @@ public class Main {
 	private void insertRechargers() {
 		Position position = Position.getRandomPosition(matrix.getSize());
 
-		if (matrix.hasAgent(position))
+		if (matrix.hasAgent(position)) {
 			insertRechargers();
+			return;
+		}
 
 		Recharger recharger = new Recharger();
 
@@ -156,13 +165,14 @@ public class Main {
 			collector.addRecharger(position.getX(), position.getY());
 		}
 	}
-	
+
 	private void insertTrash() {
 		Integer freeBlocks = (matrix.getSize() ^ 2) - (amountTrashCans + amountRechargers + amountCollectors);
 		Integer amountTrashes = (int)(Math.random() * freeBlocks) + (matrix.getSize() / 2);
 
 		if (amountTrashes == 0) {
 			insertTrash();
+			return;
 		}
 
 		for (int i = 0; i < amountTrashes; i++) {
@@ -176,13 +186,13 @@ public class Main {
 			}
 		}
 	}
-	
-	private void initArrayList(){
+
+	private void initArrayList() {
 		collectors = new ArrayList<Collector>();
 		trashCans = new ArrayList<TrashCan>();
 		rechargers = new ArrayList<Recharger>();
 	}
-	
+
 	/* GETTERS AND SETTERS */
 	public Matrix getMatrix() {
 		return matrix;
@@ -239,6 +249,4 @@ public class Main {
 	public void setMaxBatteryCapacity(Integer maxBatteryCapacity) {
 		this.maxBatteryCapacity = maxBatteryCapacity;
 	}
-	
-	
 }

@@ -37,24 +37,57 @@ public class Position {
 		return position;
 	}
 	
-	public static double getDiference(Position origin, Position destiny) {
+	public static double getDiagonalDistance(Position origin, Position destiny) {
 		double res = 0;
 		
 		if (origin == null || destiny == null) {
 			return res;
 		}
 		
-		return Math.sqrt(Math.pow((destiny.getX() - origin.getX()), 2) + Math.pow((destiny.getY() - origin.getY()), 2));
+		// Euclidean distance		
+		//return Math.sqrt(Math.pow((destiny.getX() - origin.getX()), 2) + Math.pow((destiny.getY() - origin.getY()), 2));
+		
+		// Diagonal distance
+		return Math.max(Math.abs(origin.getX() - destiny.getX()), Math.abs(origin.getY() - destiny.getY()));
 	}
-
+	
+	public static int getHeuristic(Position origin, Position destiny, ArrayList<Position> future) {
+		int xDiff = destiny.getX() - origin.getX();
+		int yDiff = destiny.getY() - origin.getY();
+		
+		Position possible = new Position(destiny.getX() + xDiff, destiny.getY() + yDiff);
+		
+		return (future.contains(possible) ? 0 : 1);
+	}
+	
 	public static Position getPseudoNearest(Position origin, ArrayList<Position> destinies) {
 		Position res = null;
 		double distance = Double.MAX_VALUE;
 		
 		for (Position position : destinies) {
-			double p = getDiference(origin, position);
+			double p = getDiagonalDistance(origin, position);
 			if (p < distance) {
 				distance = p;
+				res = position;
+			}
+		}
+		
+		return res;
+	}
+	
+	public static Position getPseudoNearest(Position current, Position origin, ArrayList<Position> destinies, ArrayList<Position> future) {
+		Position res = null;
+		double distance = Double.MAX_VALUE;
+		double f = 0;
+		double g = 0;
+		double h = 0;
+		
+		for (Position position : destinies) {
+			g = getDiagonalDistance(origin, position);
+			h = getHeuristic(current, position, future);
+			f = g + h;
+			if (f < distance) {
+				distance = f;
 				res = position;
 			}
 		}
@@ -81,5 +114,4 @@ public class Position {
 	public void setY(Integer y) {
 		this.y = y;
 	}
-
 }

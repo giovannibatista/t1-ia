@@ -1,96 +1,69 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<title>Coleta Seletiva de Lixo</title>
-
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<script type="text/javascript" src="js/script.js" />
-
 </h:head>
 <h:body>
-
 	<p:panel header="Coleta Seletiva de Lixo">
 		<h:form id="form">
 			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
-					<p:outputLabel for="amountCollectors"
-						value="Quantidade de coletores" />
+					<p:outputLabel for="amountCollectors" value="Collectors" />
 					<p:inputText id="amountCollectors" value="#{main.amountCollectors}" />
 
-					<p:outputLabel for="amountTrashCans" value="Quantidade de lixeiras" />
+					<p:outputLabel for="amountTrashCans" value="Trash cans" />
 					<p:inputText id="amountTrashCans" value="#{main.amountTrashCans}" />
 
-					<p:outputLabel for="amountRechargers"
-						value="Quantidade de recargas" />
+					<p:outputLabel for="amountRechargers" value="Rechargers" />
 					<p:inputText id="amountRechargers" value="#{main.amountRechargers}" />
-
 				</h:panelGrid>
 
 				<h:panelGrid columns="2">
-					<p:outputLabel for="amountCollectors"
-						value="Capacidade das lixeiras" />
-					<p:inputText id="maxTrashCanCapacity"
-						value="#{main.maxTrashCanCapacity}" />
+					<p:outputLabel for="amountCollectors" value="Garbage size" />
+					<p:inputText id="maxTrashCanCapacity" value="#{main.maxTrashCanCapacity}" />
 
-					<p:outputLabel for="maxTrashCapacity"
-						value="Capacidade de lixos nos coletores" />
+					<p:outputLabel for="maxTrashCapacity" value="Collector size" />
 					<p:inputText id="maxTrashCapacity" value="#{main.maxTrashCapacity}" />
 
-					<p:outputLabel for="interval"
-						value="Intervalo de tempo(Milissegundos)" />
-					<p:inputText id="interval" value="1000" />
-
+					<p:outputLabel for="maxBatteryCapacity" value="Battery (per block)" />
+					<p:inputText id="maxBatteryCapacity" value="#{main.maxBatteryCapacity}" />
 				</h:panelGrid>
 
 				<h:panelGrid columns="2">
-					<p:outputLabel for="maxBatteryCapacity"
-						value="Autonomia do coletor(por bloco)" />
-					<p:inputText id="maxBatteryCapacity"
-						value="#{main.maxBatteryCapacity}" />
+					<p:outputLabel for="interval" value="Time interval (ms)" />
+					<p:inputText id="interval" value="1000" />
 				</h:panelGrid>
-
-
 			</h:panelGrid>
-
+			
 			<p:separator />
 
-			<p:remoteCommand name="createMatrix"
-				actionListener="#{main.createMatrix}" update="@form :tableAgents" />
-
-			<p:remoteCommand name="next" actionListener="#{main.next}"
-				update="@form :tableAgents" />
-
+			<p:remoteCommand name="createMatrix" actionListener="#{main.createMatrix}" update="@form :tableAgents" />
+			<p:remoteCommand name="next" actionListener="#{main.next}" update="@form :tableAgents" />
 		</h:form>
-		<input type="button" id="createBtn" onclick="create();"
-			value="Gerar matriz" />
 
-		<input type="button" id="nextBlockBtn" onclick="nextBlock();"
-			style="display: none;" value="Executar" />
-
-		<input type="button" id="stopIntervalBtn" onclick="stopInterval();"
-			style="display: none;" value="Parar" />
-
-		<input type="button" id="nextBtn" onclick="next();"
-			style="display: none;" value="Próximo passo..." />
-
-
+		<input type="button" id="createBtn" onclick="create();" value="Gerar matriz" />
+		<input type="button" id="nextBlockBtn" onclick="nextBlock();" style="display: none;" value="Executar" />
+		<input type="button" id="stopIntervalBtn" onclick="stopInterval();" style="display: none;" value="Parar" />
+		<input type="button" id="nextBtn" onclick="next();" style="display: none;" value="Próximo passo..." />
+		
+		<p:separator />
+		
+		<h:form id="tableAgents">
+			<table id="agents">
+				<ui:repeat value="#{main.matrix.matrix}" var="firstLevel">
+					<tr>
+						<ui:repeat value="#{firstLevel}" var="secondLevel" rendered="#{!empty firstLevel}">
+							<td>
+								<img src="#{secondLevel.icon}" class="icon">#{secondLevel}</img>
+							</td>
+						</ui:repeat>
+					</tr>
+				</ui:repeat>
+			</table>
+		</h:form>
 	</p:panel>
-	<h:form id="tableAgents">
-		<table id="agents">
-			<ui:repeat value="#{main.matrix.matrix}" var="firstLevel">
-				<tr>
-					<ui:repeat value="#{firstLevel}" var="secondLevel"
-						rendered="#{!empty firstLevel}">
-						<td><img src="#{secondLevel.icon}" alt="" class="icon" /></td>
-					</ui:repeat>
-				</tr>
-			</ui:repeat>
-		</table>
-	</h:form>
 </h:body>
 </html>
